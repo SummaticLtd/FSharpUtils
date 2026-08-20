@@ -15,8 +15,8 @@ let DictionaryTestList =
             Assert.Equal(ValueNone, d |> Dictionary.tryFind "b"))
         Test.Sync("addOrReplace adds, then replaces without growing", fun () ->
             let d = Dictionary<string, int>()
-            Dictionary.addOrReplace(d, "a", 1)
-            Dictionary.addOrReplace(d, "a", 2)
+            d |> Dictionary.addOrReplace ("a", 1)
+            d |> Dictionary.addOrReplace ("a", 2)
             Assert.Equal(ValueSome 2, d |> Dictionary.tryFind "a")
             Assert.Equal(1, d.Count))
         Test.Sync("the immutable and mutable lookups agree", fun () ->
