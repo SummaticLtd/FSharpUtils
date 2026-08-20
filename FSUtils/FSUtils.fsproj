@@ -11,8 +11,8 @@
     <PackageTags>fsharp;immutablearray;immutable;collections</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/SummaticLtd/FSUtils</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/SummaticLtd/FSUtils</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SummaticLtd/FSharpUtils</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/SummaticLtd/FSharpUtils</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
