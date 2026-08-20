@@ -6,7 +6,7 @@ open System.Collections.Immutable
 
 [<RequireQualifiedAccess>]
 module ImmutableDictionary =
-    let tryGet<'a, 'b when 'a: not null> (key:'a) (d:ImmutableDictionary<'a, 'b>) =
+    let tryFind<'a, 'b when 'a: not null> (key:'a) (d:ImmutableDictionary<'a, 'b>) =
         let found, v = d.TryGetValue key
         if found then ValueSome v else ValueNone
 

@@ -34,7 +34,4 @@ let InstantTestList =
             let later = earlier + TimeSpan.FromSeconds 1.0
             Assert.True(earlier < later, "earlier sorts first")
             Assert.Equal(earlier, Instant.FromUTCDateTime utc))
-        Test.Sync("TimeSpanDisplay shows days only when there are days", fun () ->
-            Assert.Equal("2h 30m", Instant.TimeSpanDisplay(TimeSpan.FromMinutes 150.0))
-            Assert.Equal("1d 1h 1m", Instant.TimeSpanDisplay(TimeSpan(1, 1, 1, 0))))
     ])

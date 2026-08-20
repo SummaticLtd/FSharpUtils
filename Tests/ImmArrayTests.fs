@@ -56,6 +56,14 @@ let ImmArrayTestList =
         Test.Sync("sumBy over an empty array is the zero", fun () ->
             Assert.Equal(0, ImmArray.sumBy(ia [], 0, id))
             Assert.Equal(6, ImmArray.sumBy(ia [ 1; 2; 3 ], 0, id)))
+        Test.Sync("maxWithSafe and minWithSafe fall back on an empty array", fun () ->
+            Assert.Equal(0, ImmArray.maxWithSafe(ia [], 0, id))
+            Assert.Equal(0, ImmArray.minWithSafe(ia [], 0, id))
+            Assert.Equal(9, ImmArray.maxWithSafe(ia [ 1; 9; 5 ], 0, id))
+            Assert.Equal(1, ImmArray.minWithSafe(ia [ 1; 9; 5 ], 100, id)))
+        Test.Sync("maxWithSafe and minWithSafe clamp to the bound given", fun () ->
+            Assert.Equal(0, ImmArray.maxWithSafe(ia [ -5; -1 ], 0, id))
+            Assert.Equal(0, ImmArray.minWithSafe(ia [ 5; 1 ], 0, id)))
         Test.Sync("Range is an inclusive slice", fun () ->
             Assert.Equal(ia [ 2; 3 ], (ia [ 1; 2; 3; 4 ]).Range(1, 2))
             Assert.Equal(ia [], (ia [ 1; 2 ]).Range(1, 0)))

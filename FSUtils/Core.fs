@@ -53,11 +53,12 @@ module Extensions =
     type Control.AsyncBuilder with
         member _.Bind(t:Task<'T>, f) = async.Bind(Async.AwaitTask t, f)
 
-    type private Collections.Generic.Dictionary<'a,'b when 'a : not null>  with
-        member t.tryFind key =
+    type Collections.Generic.Dictionary<'a, 'b when 'a: not null> with
+        /// ValueSome the value if the key is present, else ValueNone.
+        member t.tryFind(key: 'a) =
             let found, v = t.TryGetValue key
             if found then ValueSome v else ValueNone
-        member t.AddOrReplace(key, value) =
+        member t.AddOrReplace(key: 'a, value: 'b) =
             let found, _ = t.TryGetValue key
             if found
                 then t.[key] <- value
@@ -85,7 +86,3 @@ module Extensions =
         let isError(r:Result<'a,'b>) =
             not (Result.isOk r)
 
-    type Dictionary<'Key, 'Value when 'Key : not null> with
-        member t.TryGetValueSafe(k: 'Key) =
-            let (b, v) = t.TryGetValue(k)
-            if b then ValueSome v else ValueNone

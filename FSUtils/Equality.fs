@@ -12,7 +12,7 @@ module Hash =
         for i = start to ia.Length - 1 do
             h.Add(ia.[i])
         h.ToHashCode()
-    let immArrayBy<'a, 'b> (f:'a -> int) (ia:ImmutableArray<'a>) =
+    let immArrayBy<'a> (f:'a -> int) (ia:ImmutableArray<'a>) =
         let h = HashCode()
         let start = if ia.Length >= 8 then ia.Length - 8 else 0
         for i = start to ia.Length - 1 do

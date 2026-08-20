@@ -15,9 +15,9 @@ module Measure =
     let removeFloatUnit<[<Measure>] 'm> (f:float<'m>) = float f
     let float32ToFloat<[<Measure>] 'm> (f:float32<'m>) =
         LanguagePrimitives.FloatWithMeasure<'m> (float f)
-    let Max32<[<Measure>] 'm>(x:float32<'m>, y:float32<'m>) =
+    let max32<[<Measure>] 'm>(x:float32<'m>, y:float32<'m>) =
         LanguagePrimitives.Float32WithMeasure<'m>(Math.Max(removeFloat32Unit<'m> x, removeFloat32Unit<'m> y))
-    let Min32<[<Measure>] 'm>(x:float32<'m>, y:float32<'m>) =
+    let min32<[<Measure>] 'm>(x:float32<'m>, y:float32<'m>) =
         LanguagePrimitives.Float32WithMeasure<'m>(Math.Min(removeFloat32Unit<'m> x, removeFloat32Unit<'m> y))
-    let WithFloat32Unit<[<Measure>] 'm> (f:float32) = LanguagePrimitives.Float32WithMeasure<'m>(f)
-    let WithFloatUnit<[<Measure>] 'm> (f:float) = LanguagePrimitives.FloatWithMeasure<'m>(f)
+    let withFloat32Unit<[<Measure>] 'm> (f:float32) = LanguagePrimitives.Float32WithMeasure<'m>(f)
+    let withFloatUnit<[<Measure>] 'm> (f:float) = LanguagePrimitives.FloatWithMeasure<'m>(f)

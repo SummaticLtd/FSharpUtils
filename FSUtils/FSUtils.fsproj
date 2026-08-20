@@ -5,7 +5,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <PackageId>Summatic.FSUtils</PackageId>
     <Description>General-purpose F# utilities: an ImmutableArray module, an immutable 2D array, IEquatable/IComparable helpers, Result and ValueOption combinators, and a UTC instant type.</Description>
     <PackageTags>fsharp;immutablearray;immutable;collections</PackageTags>
