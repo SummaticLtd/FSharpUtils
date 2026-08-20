@@ -5,6 +5,7 @@ open SimpleTests
 let testFolders = [
     TestFolder("Tests", [
         Tests.CoreTests.CoreTestList
+        Tests.DictionaryTests.DictionaryTestList
         Tests.SeqTests.SeqTestList
         Tests.ArrayTests.ArrayTestList
         Tests.ImmArrayTests.ImmArrayTestList

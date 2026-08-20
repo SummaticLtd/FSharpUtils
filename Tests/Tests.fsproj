@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="Assert.fs" />
     <Compile Include="CoreTests.fs" />
+    <Compile Include="DictionaryTests.fs" />
     <Compile Include="SeqTests.fs" />
     <Compile Include="ArrayTests.fs" />
     <Compile Include="ImmArrayTests.fs" />

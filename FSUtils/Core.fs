@@ -53,17 +53,6 @@ module Extensions =
     type Control.AsyncBuilder with
         member _.Bind(t:Task<'T>, f) = async.Bind(Async.AwaitTask t, f)
 
-    type Collections.Generic.Dictionary<'a, 'b when 'a: not null> with
-        /// ValueSome the value if the key is present, else ValueNone.
-        member t.tryFind(key: 'a) =
-            let found, v = t.TryGetValue key
-            if found then ValueSome v else ValueNone
-        member t.AddOrReplace(key: 'a, value: 'b) =
-            let found, _ = t.TryGetValue key
-            if found
-                then t.[key] <- value
-                else t.Add(key, value)
-
     type System.Guid with
         static member FromInt(i:int) =
             Guid(i, 0s, 0s, 0uy, 0uy, 0uy, 0uy, 0uy, 0uy, 0uy, 0uy)

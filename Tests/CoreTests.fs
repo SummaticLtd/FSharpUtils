@@ -9,17 +9,6 @@ open Tests
 
 let CoreTestList =
     TestList("Core", [
-        Test.Sync("Dictionary.tryFind reports presence", fun () ->
-            let d = Dictionary<string, int>()
-            d.Add("a", 1)
-            Assert.Equal(ValueSome 1, d.tryFind "a")
-            Assert.Equal(ValueNone, d.tryFind "b"))
-        Test.Sync("AddOrReplace adds then replaces", fun () ->
-            let d = Dictionary<string, int>()
-            d.AddOrReplace("a", 1)
-            d.AddOrReplace("a", 2)
-            Assert.Equal(ValueSome 2, d.tryFind "a")
-            Assert.Equal(1, d.Count))
         Test.Sync("Guid.FromInt is predefined, a new guid is not", fun () ->
             Assert.True(Guid.FromInt(7).IsPredefined, "built from an int")
             Assert.False(Guid.NewGuid().IsPredefined, "randomly generated"))
@@ -32,7 +21,11 @@ let CoreTestList =
         Test.Sync("withLock releases the lock when the body throws", fun () ->
             let l = Lock()
             Assert.Throws((fun () -> withLock(l, fun () -> failwith "boom")), "the body throws")
-            Assert.Equal(1, withLock(l, fun () -> 1)))
+            Assert.False(l.IsHeldByCurrentThread, "the scope was disposed"))
+        Test.Sync("withLock holds the lock for the duration of the body", fun () ->
+            let l = Lock()
+            Assert.True(withLock(l, fun () -> l.IsHeldByCurrentThread), "held inside")
+            Assert.False(l.IsHeldByCurrentThread, "released after"))
         Test.Sync("NonGenericWorkaround compares matching types", fun () ->
             Assert.True(NonGenericWorkaround.equals<string>("a", box "a"), "equal strings")
             Assert.False(NonGenericWorkaround.equals<string>("a", box "b"), "different strings")
@@ -40,8 +33,4 @@ let CoreTestList =
         Test.Sync("NonGenericWorkaround throws on a type mismatch rather than returning false", fun () ->
             Assert.Throws((fun () -> NonGenericWorkaround.equals<string>("a", box 1) |> ignore), "string vs int")
             Assert.Throws((fun () -> NonGenericWorkaround.compareTo<string>("a", box 1) |> ignore), "string vs int"))
-        Test.Sync("ImmutableDictionary.tryFind matches the Dictionary one", fun () ->
-            let d = Collections.Immutable.ImmutableDictionary.CreateRange([ KeyValuePair("a", 1) ])
-            Assert.Equal(ValueSome 1, d |> ImmutableDictionary.tryFind "a")
-            Assert.Equal(ValueNone, d |> ImmutableDictionary.tryFind "b"))
     ])
