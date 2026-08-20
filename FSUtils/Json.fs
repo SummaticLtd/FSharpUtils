@@ -84,7 +84,6 @@ module JsonNode =
     let tryAsArray (node:Nodes.JsonNode) =
         if node.GetValueKind() = System.Text.Json.JsonValueKind.Array then ValueSome(node.AsArray().ToImmutableArray()) else ValueNone
 
-    // Building helpers (moved from DataUtils.JToken)
     let jobj(props: list<string * Nodes.JsonNode>) : Nodes.JsonNode =
         let o = Nodes.JsonObject()
         for (key, value) in props do o.Add(key, value)
