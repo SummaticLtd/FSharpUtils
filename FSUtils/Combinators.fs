@@ -6,22 +6,36 @@ open System.Collections.Immutable
 
 [<RequireQualifiedAccess>]
 module Result =
+    /// Gets v if Ok v, else fails
+    let OkValue(r:Result<'a,'b>) =
+        match r with Ok v -> v | Error e -> failwith("Error does not have OkValue. Error: " + e.ToString())
+    /// Gets v if Error v, else fails
+    let ErrorValue(r:Result<'a,'b>) =
+        match r with Error v -> v | Ok _ -> failwith "Ok does not have ErrorValue"
+    let TryOkValue(r:Result<'a,'b>) =
+        match r with Ok v -> ValueSome v | Error _ -> ValueNone
+    let ignoreOk(r:Result<'a,'b>) =
+        match r with Ok _ -> Ok() | Error e -> Error e
+    let isOk(r:Result<'a,'b>) =
+        match r with Ok _ -> true | Error _ -> false
+    let isError(r:Result<'a,'b>) =
+        not (isOk r)
     let partition<'Ok, 'Error>(l:ImmutableArray<Result<'Ok, 'Error>>) =
         l |> ImmArray.chooseV(function Ok x -> ValueSome x | Error _ -> ValueNone),
         l |> ImmArray.chooseV(function Ok _ -> ValueNone | Error e -> ValueSome e)
 
     let ofArray<'a, 'b when 'b: not null>(results:Result<'a, 'b>[]) =
-        match results |> Array.tryFind(fun r -> Result.isError r) with
+        match results |> Array.tryFind(fun r -> isError r) with
         | None ->
-            results |> Array.map(fun r -> Result.OkValue r) |> Ok
+            results |> Array.map(fun r -> OkValue r) |> Ok
         | Some r ->
-            Error(Result.ErrorValue r)
+            Error(ErrorValue r)
     let ofImmArray<'a, 'b when 'b: not null>(results:ImmutableArray<Result<'a, 'b>>) =
-        match results |> ImmArray.tryFind(fun r -> Result.isError r) with
+        match results |> ImmArray.tryFind(fun r -> isError r) with
         | ValueNone ->
-            results |> ImmArray.map(fun r -> Result.OkValue r) |> Ok
+            results |> ImmArray.map(fun r -> OkValue r) |> Ok
         | ValueSome r ->
-            Error(Result.ErrorValue r)
+            Error(ErrorValue r)
     /// Returns Ok(the Ok values of the mapped list) if all outputs are Ok, else the first Error. Short-circuits if an Error is encountered.
     let ofImmArrayMap<'a, 'Ok, 'Error> (f: 'a -> Result<'Ok, 'Error>) (l:ImmutableArray<'a>) =
         let b = ImmutableArray.CreateBuilder<'Ok>(l.Length)

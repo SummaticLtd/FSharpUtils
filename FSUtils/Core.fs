@@ -59,19 +59,3 @@ module Extensions =
         member t.IsPredefined =
             t.ToByteArray() |> Array.skip 4 |> Array.forall ((=) 0uy)
 
-    module Result =
-        /// Gets v if Ok v, else fails
-        let OkValue(r:Result<'a,'b>) =
-            match r with Ok v -> v | Error e -> failwith("Error does not have OkValue. Error: " + e.ToString())
-        /// Gets v if Error v, else fails
-        let ErrorValue(r:Result<'a,'b>) =
-            match r with Error v -> v | Ok _ -> failwith "Ok does not have ErrorValue"
-        let TryOkValue(r:Result<'a,'b>) =
-            match r with Ok v -> ValueSome v | Error _ -> ValueNone
-        let ignoreOk(r:Result<'a,'b>) =
-            match r with Ok _ -> Ok() | Error e -> Error e
-        let isOk(r:Result<'a,'b>) =
-            match r with Ok _ -> true | Error _ -> false
-        let isError(r:Result<'a,'b>) =
-            not (Result.isOk r)
-

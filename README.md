@@ -8,7 +8,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 
 | Module | What it gives you |
 | --- | --- |
-| `ImmArray` | The `ImmutableArray` module FSharp.Core doesn't ship: `map`, `chooseV`, `groupBy`, `mapFold`, `partition` and about 80 more, all `InlineIfLambda` and builder-based. Lookups return `voption`. |
+| `ImmArray` | The `ImmutableArray` module FSharp.Core doesn't ship: 58 functions - `map`, `chooseV`, `groupBy`, `mapFold`, `partition` and the rest - `InlineIfLambda` and builder-based throughout. Lookups return `voption`. |
 | `ImmA2D`, `A2D` | An immutable 2D array with structural equality, backed by a row-major `ImmutableArray`, and 0-based `Array2D` replacements. |
 | `Equals`, `Hash`, `Compare` | Helpers for implementing `IEquatable<'T>` and `IComparable<'T>` over arrays, 2D arrays and tuples, instead of relying on F# structural equality. |
 | `Result`, `ValueOption`, `Task`, `Async`, `Tuple` | The missing combinators, notably `Result.ofImmArrayMap` and `ValueOption.ofImmArrayMap`, which short-circuit. |
@@ -17,7 +17,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 | `Dictionary`, `ImmutableDictionary` | `tryFind` returning `voption`, and `addOrReplace`. |
 | `Json` | `Result`-returning `System.Text.Json` accessors that check the value kind instead of throwing. |
 | `Measure` | Conversions that keep units of measure attached, so `float`/`float32` casts cannot silently drop them. |
-| `Seq`, `Array` | A few additions, notably `distinctPhysical`, which is distinct by reference rather than by an overridden `Equals`. |
+| `Seq`, `Array` | `distinctPhysical` (distinct by reference rather than by an overridden `Equals`), `countWhere` and `maxWithSafe`. |
 | `NonGenericWorkaround` | Type-checked `Equals`/`CompareTo` for the non-generic overrides, which F# otherwise routes through structural equality ([dotnet/fsharp#9398](https://github.com/dotnet/fsharp/issues/9398)). |
 | `SimpleLazy` | `Lazy<'T>` without the trimming warnings. |
 | `Builders` | `maybe`, `vmaybe` and `result` computation expressions. |
@@ -25,7 +25,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 
 ## Requirements
 
-.NET 10, and F# nullable reference types enabled (`<Nullable>enable</Nullable>`).
+.NET 10. The library is built with F# nullable reference types enabled, but consumers need not enable them.
 
 ## Notes
 

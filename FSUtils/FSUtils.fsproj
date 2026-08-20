@@ -7,12 +7,18 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Version>0.2.0</Version>
     <PackageId>Summatic.FSUtils</PackageId>
+    <Authors>Summatic</Authors>
+    <Copyright>Copyright (c) 2026 Summatic</Copyright>
     <Description>General-purpose F# utilities: an ImmutableArray module, an immutable 2D array, IEquatable/IComparable helpers, Result and ValueOption combinators, and a UTC instant type.</Description>
     <PackageTags>fsharp;immutablearray;immutable;collections</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/SummaticLtd/FSharpUtils</RepositoryUrl>
     <PackageProjectUrl>https://github.com/SummaticLtd/FSharpUtils</PackageProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <!-- Pin the floor rather than inheriting the SDK's FSharp.Core, which would force every consumer up to it. -->
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
   </PropertyGroup>

@@ -26,13 +26,13 @@ jobs:
         run: dotnet restore FSUtils/FSUtils.fsproj
 
       - name: Build
-        run: dotnet build FSUtils/FSUtils.fsproj -c Release --no-restore
+        run: dotnet build FSUtils/FSUtils.fsproj -c Release --no-restore -p:ContinuousIntegrationBuild=true
 
       - name: Test
         run: dotnet run --project Tests/Tests.fsproj -c Release
 
       - name: Pack
-        run: dotnet pack FSUtils/FSUtils.fsproj -c Release --no-build -o ./nupkgs
+        run: dotnet pack FSUtils/FSUtils.fsproj -c Release --no-build -o ./nupkgs -p:ContinuousIntegrationBuild=true
 
       - name: NuGet login (OIDC → temp API key)
         uses: NuGet/login@v1
