@@ -5,8 +5,6 @@ open SimpleTests
 open FSUtils
 open Tests
 
-[<Measure>] type testUnit
-
 let ParseTestList =
     TestList("Parse", [
         Test.Sync("toInt accepts integers and rejects the rest", fun () ->
@@ -36,8 +34,4 @@ let ParseTestList =
             Assert.Equal(ValueNone, Parse.toComplex "")
             Assert.Equal(ValueNone, Parse.toComplex "3+")
             Assert.Equal(ValueNone, Parse.toComplex "abc"))
-        Test.Sync("Measure round-trips units", fun () ->
-            let px = Measure.WithFloatUnit<testUnit> 3.5
-            Assert.Equal(3.5, Measure.removeFloatUnit<testUnit> px)
-            Assert.Equal(3.5f, Measure.removeFloat32Unit<testUnit>(Measure.toFloat32 px)))
     ])

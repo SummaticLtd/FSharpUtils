@@ -11,6 +11,7 @@
     <Compile Include="ImmArrayTests.fs" />
     <Compile Include="ImmA2DTests.fs" />
     <Compile Include="ParseTests.fs" />
+    <Compile Include="MeasureTests.fs" />
     <Compile Include="InstantTests.fs" />
     <Compile Include="CombinatorTests.fs" />
     <Compile Include="JsonTests.fs" />
