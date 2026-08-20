@@ -27,7 +27,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 ## Notes
 
 - Opening `FSUtils` brings modules named `Seq`, `Array`, `Result`, `ValueOption`, `Task` and `Async` into scope, which augment the FSharp.Core modules of the same name. It also auto-opens extensions to `Dictionary`, `Guid`, `ImmutableArray` and `TimeSpan`.
-- `ImmArray.take` caps at the array length rather than throwing, and `Base64Url.Encode` keeps `=` padding. Both differ from what the names may suggest; `Decode` accepts padded and unpadded input.
+- `Base64Url.Encode` keeps `=` padding, which real base64url omits. `Decode` accepts padded and unpadded input.
 
 ## Tests
 

@@ -37,10 +37,11 @@ let ImmArrayTestList =
             Assert.Equal(ImmutableArray.Create((1, 'a'), (2, 'b')), ImmArray.zip(ia [ 1; 2 ], ImmutableArray.Create('a', 'b'))))
         Test.Sync("zip rejects length mismatch", fun () ->
             Assert.Throws((fun () -> ImmArray.zip(ia [ 1 ], ia [ 1; 2 ]) |> ignore), "lengths differ"))
-        Test.Sync("take and truncate both cap at the length", fun () ->
+        Test.Sync("truncate caps at the length and never throws", fun () ->
+            Assert.Equal(ia [ 1 ], ia [ 1; 2 ] |> ImmArray.truncate 1)
             Assert.Equal(ia [ 1; 2 ], ia [ 1; 2 ] |> ImmArray.truncate 5)
-            Assert.Equal(ia [ 1; 2 ], ia [ 1; 2 ] |> ImmArray.take 5)
-            Assert.Equal(ia [ 1 ], ia [ 1; 2 ] |> ImmArray.take 1))
+            Assert.Equal(ia [], ia [ 1; 2 ] |> ImmArray.truncate 0)
+            Assert.Equal(ia [], ia [ 1; 2 ] |> ImmArray.truncate -1))
         Test.Sync("tryFindIndexBack finds the last match", fun () ->
             Assert.Equal(ValueSome 3, ia [ 1; 2; 1; 2 ] |> ImmArray.tryFindIndexBack(fun x -> x = 2))
             Assert.Equal(ValueNone, ia [ 1 ] |> ImmArray.tryFindIndexBack(fun x -> x = 2)))

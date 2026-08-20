@@ -183,6 +183,7 @@ module ImmArray =
         while count < ia.Length && f ia.[count] do
             count <- count + 1
         ia.Range(0, count - 1)
+    /// The first count elements, or all of them if there are fewer. Never throws.
     let truncate<'a> (count:int) (ia:ImmutableArray<'a>) =
         let count' = min count ia.Length
         ia.Range(0, count' - 1)
@@ -279,10 +280,6 @@ module ImmArray =
         b.Add h
         b.AddRange t
         b.MoveToImmutable()
-    /// Takes the first count elements of the array, or the whole array if it is shorter
-    /// The first count elements, or all of them if there are fewer. Unlike Array.take, this does not throw.
-    let take (count:int) (ia:ImmutableArray<'a>) =
-        ia.Slice(0, min count ia.Length)
 
     let inline sumBy<'a, 'b when 'b : (static member (+) : 'b * 'b -> 'b)>(ia: ImmutableArray<'a>, zero: 'b, [<InlineIfLambda>] f: 'a -> 'b) =
         let mutable acc = zero
