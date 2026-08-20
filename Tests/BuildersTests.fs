@@ -22,12 +22,12 @@ let BuildersTestList =
                     return a + b
                 }
             Assert.Equal(None, sum))
-        Test.Sync("maybe turns a null return into None", fun () ->
+        Test.Sync("maybe wraps whatever is returned, null included", fun () ->
             let s =
                 maybe {
                     return (null: string | null)
                 }
-            Assert.Equal(None, s))
+            Assert.Equal(Some (null: string | null), s))
         Test.Sync("vmaybe binds through ValueSome", fun () ->
             let sum =
                 vmaybe {
