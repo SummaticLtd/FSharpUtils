@@ -1,0 +1,7 @@
+﻿<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <NoWarn>$(NoWarn);FS0104</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,4 @@
+﻿<Solution>
+  <Project Path="FSUtils/FSUtils.fsproj" />
+  <Project Path="Tests/Tests.fsproj" />
+</Solution>

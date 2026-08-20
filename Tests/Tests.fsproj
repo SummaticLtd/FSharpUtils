@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Assert.fs" />
+    <Compile Include="ImmArrayTests.fs" />
+    <Compile Include="ImmA2DTests.fs" />
+    <Compile Include="ParseTests.fs" />
+    <Compile Include="InstantTests.fs" />
+    <Compile Include="CombinatorTests.fs" />
+    <Compile Include="JsonTests.fs" />
+    <Compile Include="EntryPoint.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SimpleTests" Version="0.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FSUtils\FSUtils.fsproj" />
+  </ItemGroup>
+
+</Project>
