@@ -50,15 +50,4 @@ let CombinatorTestList =
             Assert.Equal(7, l.Value)
             Assert.Equal(1, calls)
             Assert.True(l.IsValueCreated, "evaluated after use"))
-        Test.Sync("Base64Url round-trips and avoids URL-unsafe characters", fun () ->
-            let bytes = [| 251uy; 255uy; 190uy; 1uy; 2uy |]
-            let encoded = Base64Url.Encode bytes
-            Assert.False(encoded.Contains '+' || encoded.Contains '/', "no + or / in the output")
-            Assert.Equal(bytes, Base64Url.Decode encoded))
-        Test.Sync("Base64Url decodes every padding length", fun () ->
-            for n in 1 .. 6 do
-                let bytes = Array.init n byte
-                Assert.Equal(bytes, Base64Url.Decode(Base64Url.Encode bytes)))
-        Test.Sync("Base64Url decodes unpadded input", fun () ->
-            Assert.Equal("Hi", Base64Url.DecodeToString "SGk"))
     ])

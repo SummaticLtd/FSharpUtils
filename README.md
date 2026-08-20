@@ -16,7 +16,6 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 | `Parse` | `voption`-returning, invariant-culture parsers for `int`, `float`, `Guid` and `Complex`. |
 | `Json` | `Result`-returning `System.Text.Json` accessors that check the value kind instead of throwing. |
 | `SimpleLazy` | `Lazy<'T>` without the trimming warnings. |
-| `Base64Url` | base64url encode and decode, without a library dependency. |
 | `Builders` | `maybe`, `vmaybe` and `result` computation expressions. |
 | `withLock` | `lock` over `System.Threading.Lock`, engaging its fast path ([dotnet/fsharp#17287](https://github.com/dotnet/fsharp/issues/17287)). |
 
@@ -26,8 +25,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 
 ## Notes
 
-- Opening `FSUtils` brings modules named `Seq`, `Array`, `Result`, `ValueOption`, `Task` and `Async` into scope, which augment the FSharp.Core modules of the same name. It also auto-opens extensions to `Dictionary`, `Guid`, `ImmutableArray` and `TimeSpan`.
-- `Base64Url.Encode` keeps `=` padding, which real base64url omits. `Decode` accepts padded and unpadded input.
+Opening `FSUtils` brings modules named `Seq`, `Array`, `Result`, `ValueOption`, `Task` and `Async` into scope, which augment the FSharp.Core modules of the same name. It also auto-opens extensions to `Dictionary`, `Guid`, `ImmutableArray` and `TimeSpan`.
 
 ## Tests
 
