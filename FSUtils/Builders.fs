@@ -3,10 +3,7 @@
 [<Sealed>]
 type MaybeBuilder() =
     member _.Bind(a:'a option, f:'a->('b option)) = Option.bind f a
-    member _.Return(a:'a) =
-        // condition will not be needed when C# nullables are used
-        // unknown whether we are using it now
-        if obj.ReferenceEquals(a, null) then None else Some a
+    member _.Return(a:'a) = Some a
     member _.ReturnFrom(x:'a option) = x
     member _.Zero () = None
 

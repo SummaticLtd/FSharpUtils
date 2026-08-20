@@ -5,12 +5,6 @@ open System.Threading.Tasks
 open System.Collections.Immutable
 
 [<RequireQualifiedAccess>]
-module ImmutableDictionary =
-    let tryGet<'a, 'b when 'a: not null> (key:'a) (d:ImmutableDictionary<'a, 'b>) =
-        let found, v = d.TryGetValue key
-        if found then ValueSome v else ValueNone
-
-[<RequireQualifiedAccess>]
 module Result =
     let partition<'Ok, 'Error>(l:ImmutableArray<Result<'Ok, 'Error>>) =
         l |> ImmArray.chooseV(function Ok x -> ValueSome x | Error _ -> ValueNone),

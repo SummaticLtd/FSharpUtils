@@ -36,18 +36,5 @@ type Instant private (dt:DateTime) =
     static member TodayAtTime(timeOfDay: TimeSpan) =
         let localDateTime = DateTime.Now.Date + timeOfDay
         Instant.FromUTCDateTime(localDateTime.ToUniversalTime())
-    static member TimeSpanDisplay(ts:TimeSpan) =
-        if ts.Days > 0 then
-            ts.Days.ToString() + "d " + ts.Hours.ToString() + "h " + ts.Minutes.ToString() + "m"
-        else
-            ts.Hours.ToString() + "h " + ts.Minutes.ToString() + "m"
     override t.ToString() =
         t.DT.ToString("yyyy-MM-dd HH-mm-ss")
-
-[<AutoOpen>]
-module TimeSpanExtensions =
-    type TimeSpan with
-        /// Displays a time span as "3h 30m"
-        member t.TimeSpanUserDisplay =
-            if t < TimeSpan.FromHours 24. then String.Format("{0:%h}h {0:%m}m", t)
-            else String.Format("{0:%d}d {0:%h}h {0:%m}m", t)

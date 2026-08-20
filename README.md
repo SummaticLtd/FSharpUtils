@@ -14,6 +14,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 | `Result`, `ValueOption`, `Task`, `Async`, `Tuple` | The missing combinators, notably `Result.ofImmArrayMap` and `ValueOption.ofImmArrayMap`, which short-circuit. |
 | `Instant` | A struct UTC timestamp. Non-UTC input is rejected rather than silently reinterpreted. |
 | `Parse` | `voption`-returning, invariant-culture parsers for `int`, `float`, `Guid` and `Complex`. |
+| `Dictionary`, `ImmutableDictionary` | `tryFind` returning `voption`, and `addOrReplace`. |
 | `Json` | `Result`-returning `System.Text.Json` accessors that check the value kind instead of throwing. |
 | `Measure` | Conversions that keep units of measure attached, so `float`/`float32` casts cannot silently drop them. |
 | `Seq`, `Array` | A few additions, notably `distinctPhysical`, which is distinct by reference rather than by an overridden `Equals`. |
@@ -28,7 +29,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 
 ## Notes
 
-Opening `FSUtils` brings modules named `Seq`, `Array`, `Result`, `ValueOption`, `Task` and `Async` into scope, which augment the FSharp.Core modules of the same name. It also auto-opens extensions to `Dictionary`, `Guid`, `ImmutableArray` and `TimeSpan`.
+Opening `FSUtils` brings modules named `Seq`, `Array`, `Result`, `ValueOption`, `Task` and `Async` into scope, which augment the FSharp.Core modules of the same name. It also auto-opens extensions to `Guid` and `ImmutableArray`.
 
 ## Tests
 
