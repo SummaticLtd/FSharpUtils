@@ -21,6 +21,8 @@
 
   <ItemGroup>
     <Compile Include="Core.fs" />
+    <Compile Include="Seq.fs" />
+    <Compile Include="Array.fs" />
     <Compile Include="ImmArray.fs" />
     <Compile Include="Combinators.fs" />
     <Compile Include="Parse.fs" />
