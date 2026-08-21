@@ -9,11 +9,7 @@ module Parse =
     let toIntSpan(s:ReadOnlySpan<char>) = match Int32.TryParse s with (true, r) -> ValueSome r | _ -> ValueNone
     let toInt16(s:string) = match Int16.TryParse s with (true, r) -> ValueSome r | _ -> ValueNone
     let toGuid(s:string) = match Guid.TryParse s with (true, r) -> ValueSome r | _ -> ValueNone
-    /// Requires an explicit scheme, without which "/a" is a file URI on Unix and unparseable on Windows.
-    let toAbsoluteUri(s:string) =
-        match Uri.TryCreate(s, UriKind.Absolute) with
-        | true, NonNull r when s.StartsWith(r.Scheme + ":", StringComparison.OrdinalIgnoreCase) -> ValueSome r
-        | _ -> ValueNone
+    let toAbsoluteUri(s:string) = match Uri.TryCreate(s, UriKind.Absolute) with (true, NonNull r) -> ValueSome r | _ -> ValueNone
     let toFloat(s:string) = match System.Double.TryParse(s, Globalization.NumberStyles.Float, Globalization.CultureInfo.InvariantCulture) with (true, r) -> ValueSome r | _ -> ValueNone
     let toFloatSpan(s:ReadOnlySpan<char>) = match System.Double.TryParse(s, Globalization.NumberStyles.Float, Globalization.CultureInfo.InvariantCulture) with (true, r) -> ValueSome r | _ -> ValueNone
     let toComplex(s:string) =

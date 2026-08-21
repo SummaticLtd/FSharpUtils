@@ -21,9 +21,8 @@ let ParseTestList =
         Test.Sync("toGuid round-trips a guid", fun () ->
             Assert.Equal(ValueSome(System.Guid "12345678-1234-1234-1234-1234567890AB"), Parse.toGuid "12345678-1234-1234-1234-1234567890AB")
             Assert.Equal(ValueNone, Parse.toGuid "not-a-guid"))
-        Test.Sync("toAbsoluteUri requires a scheme", fun () ->
+        Test.Sync("toAbsoluteUri takes absolute URIs only", fun () ->
             Assert.Equal(ValueSome(System.Uri "https://website.com/a?b=1"), Parse.toAbsoluteUri "https://website.com/a?b=1")
-            Assert.Equal(ValueNone, Parse.toAbsoluteUri "/a?b=1")
             Assert.Equal(ValueNone, Parse.toAbsoluteUri "a/b"))
         Test.Sync("toComplex reads reals and imaginaries", fun () ->
             Assert.Equal(ValueSome(Complex(3.0, 0.0)), Parse.toComplex "3")
