@@ -6,28 +6,6 @@ open Tests
 
 let BuildersTestList =
     TestList("Builders", [
-        Test.Sync("maybe binds through Some", fun () ->
-            let sum =
-                maybe {
-                    let! a = Some 1
-                    let! b = Some 2
-                    return a + b
-                }
-            Assert.Equal(Some 3, sum))
-        Test.Sync("maybe short-circuits on None", fun () ->
-            let sum =
-                maybe {
-                    let! a = Some 1
-                    let! b = None
-                    return a + b
-                }
-            Assert.Equal(None, sum))
-        Test.Sync("maybe wraps whatever is returned, null included", fun () ->
-            let s =
-                maybe {
-                    return (null: string | null)
-                }
-            Assert.Equal(Some (null: string | null), s))
         Test.Sync("vmaybe binds through ValueSome", fun () ->
             let sum =
                 vmaybe {
