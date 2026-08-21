@@ -22,7 +22,7 @@ let ParseTestList =
             Assert.Equal(ValueSome(System.Guid "12345678-1234-1234-1234-1234567890AB"), Parse.toGuid "12345678-1234-1234-1234-1234567890AB")
             Assert.Equal(ValueNone, Parse.toGuid "not-a-guid"))
         Test.Sync("toAbsoluteUri takes absolute URIs only", fun () ->
-            Assert.Equal(ValueSome(System.Uri "https://summatic.co.uk/a?b=1"), Parse.toAbsoluteUri "https://summatic.co.uk/a?b=1")
+            Assert.Equal(ValueSome(System.Uri "https://example.com/a?b=1"), Parse.toAbsoluteUri "https://example.com/a?b=1")
             Assert.Equal(ValueNone, Parse.toAbsoluteUri "/a?b=1")
             Assert.Equal(ValueNone, Parse.toAbsoluteUri ""))
         Test.Sync("toComplex reads reals and imaginaries", fun () ->
