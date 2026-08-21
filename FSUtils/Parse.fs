@@ -9,8 +9,7 @@ module Parse =
     let toIntSpan(s:ReadOnlySpan<char>) = match Int32.TryParse s with (true, r) -> ValueSome r | _ -> ValueNone
     let toInt16(s:string) = match Int16.TryParse s with (true, r) -> ValueSome r | _ -> ValueNone
     let toGuid(s:string) = match Guid.TryParse s with (true, r) -> ValueSome r | _ -> ValueNone
-    /// Requires s to declare its own scheme. Without that check the result is platform-dependent:
-    /// on Unix "/a" is an absolute file path, so it parses as file:///a, while on Windows it does not parse.
+    /// Requires an explicit scheme, without which "/a" is a file URI on Unix and unparseable on Windows.
     let toAbsoluteUri(s:string) =
         match Uri.TryCreate(s, UriKind.Absolute) with
         | true, NonNull r when s.StartsWith(r.Scheme + ":", StringComparison.OrdinalIgnoreCase) -> ValueSome r

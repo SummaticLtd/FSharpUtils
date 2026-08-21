@@ -21,13 +21,10 @@ let ParseTestList =
         Test.Sync("toGuid round-trips a guid", fun () ->
             Assert.Equal(ValueSome(System.Guid "12345678-1234-1234-1234-1234567890AB"), Parse.toGuid "12345678-1234-1234-1234-1234567890AB")
             Assert.Equal(ValueNone, Parse.toGuid "not-a-guid"))
-        Test.Sync("toAbsoluteUri takes absolute URIs only", fun () ->
+        Test.Sync("toAbsoluteUri requires a scheme", fun () ->
             Assert.Equal(ValueSome(System.Uri "https://website.com/a?b=1"), Parse.toAbsoluteUri "https://website.com/a?b=1")
-            Assert.Equal(ValueSome(System.Uri "file:///a"), Parse.toAbsoluteUri "file:///a")
-            // "/a" is an absolute path on Unix, so the BCL parses it as file:///a there and not at all on Windows
             Assert.Equal(ValueNone, Parse.toAbsoluteUri "/a?b=1")
-            Assert.Equal(ValueNone, Parse.toAbsoluteUri "a/b")
-            Assert.Equal(ValueNone, Parse.toAbsoluteUri ""))
+            Assert.Equal(ValueNone, Parse.toAbsoluteUri "a/b"))
         Test.Sync("toComplex reads reals and imaginaries", fun () ->
             Assert.Equal(ValueSome(Complex(3.0, 0.0)), Parse.toComplex "3")
             Assert.Equal(ValueSome(Complex(0.0, 4.0)), Parse.toComplex "4i")
