@@ -20,7 +20,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 | `Seq`, `Array` | `distinctPhysical` (distinct by reference rather than by an overridden `Equals`), `countWhere` and `maxWithSafe`. |
 | `NonGenericWorkaround` | Type-checked `Equals`/`CompareTo` for the non-generic overrides, which F# otherwise routes through structural equality ([dotnet/fsharp#9398](https://github.com/dotnet/fsharp/issues/9398)). |
 | `SimpleLazy` | `Lazy<'T>` without the trimming warnings. |
-| `Builders` | `maybe`, `vmaybe` and `result` computation expressions. |
+| `Builders` | `vmaybe` and `result` computation expressions. |
 | `withLock` | `lock` over `System.Threading.Lock`, engaging its fast path ([dotnet/fsharp#17287](https://github.com/dotnet/fsharp/issues/17287)). |
 
 ## Requirements
