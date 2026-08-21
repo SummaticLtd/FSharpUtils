@@ -13,7 +13,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 | `Equals`, `Hash`, `Compare` | Helpers for implementing `IEquatable<'T>` and `IComparable<'T>` over arrays, 2D arrays and tuples, instead of relying on F# structural equality. |
 | `Result`, `ValueOption`, `Task`, `Async`, `Tuple` | The missing combinators, notably `Result.ofImmArrayMap` and `ValueOption.ofImmArrayMap`, which short-circuit. |
 | `Instant` | A struct UTC timestamp. Non-UTC input is rejected rather than silently reinterpreted. |
-| `Parse` | `voption`-returning, invariant-culture parsers for `int`, `float`, `Guid` and `Complex`. |
+| `Parse` | `voption`-returning, invariant-culture parsers for `int`, `float`, `Guid`, `Uri` and `Complex`. |
 | `Dictionary`, `ImmutableDictionary` | `tryFind` returning `voption`, and `addOrReplace`. |
 | `Json` | `Result`-returning `System.Text.Json` accessors that check the value kind instead of throwing. |
 | `Measure` | Conversions that keep units of measure attached, so `float`/`float32` casts cannot silently drop them. |
