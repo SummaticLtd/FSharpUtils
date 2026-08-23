@@ -2,7 +2,6 @@
 
 open SimpleTests
 open FSUtils
-open Tests
 
 [<Measure>] type testUnit
 

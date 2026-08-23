@@ -3,7 +3,6 @@
 open System.Collections.Immutable
 open SimpleTests
 open FSUtils
-open Tests
 
 let private ia (xs: int list) = xs.ToImmutableArray()
 

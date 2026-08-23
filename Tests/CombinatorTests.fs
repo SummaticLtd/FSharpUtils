@@ -3,7 +3,6 @@
 open System.Collections.Immutable
 open SimpleTests
 open FSUtils
-open Tests
 
 let private ia (xs: int list) = xs.ToImmutableArray()
 
@@ -39,13 +38,13 @@ let CombinatorTestList =
             Assert.Equal(0, Compare.tuple2(struct((1, 2), (1, 2)))))
         Test.Sync("Equals.immArray needs matching lengths and elements", fun () ->
             Assert.True(Equals.immArray(ia [ 1; 2 ], ia [ 1; 2 ]), "equal arrays")
-            Assert.False(Equals.immArray(ia [ 1; 2 ], ia [ 1 ]), "different lengths"))
+            Assert.True(not (Equals.immArray(ia [ 1; 2 ], ia [ 1 ])), "different lengths"))
         Test.Sync("Hash.immArray agrees for equal arrays", fun () ->
             Assert.Equal(Hash.immArray(ia [ 1; 2; 3 ]), Hash.immArray(ia [ 1; 2; 3 ])))
         Test.Sync("SimpleLazy evaluates once, on demand", fun () ->
             let mutable calls = 0
             let l = SimpleLazy(fun () -> calls <- calls + 1; 7)
-            Assert.False(l.IsValueCreated, "not evaluated before use")
+            Assert.True(not l.IsValueCreated, "not evaluated before use")
             Assert.Equal(7, l.Value)
             Assert.Equal(7, l.Value)
             Assert.Equal(1, calls)

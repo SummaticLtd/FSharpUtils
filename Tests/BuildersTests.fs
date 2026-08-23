@@ -2,7 +2,6 @@
 
 open SimpleTests
 open Builders
-open Tests
 
 let BuildersTestList =
     TestList("Builders", [

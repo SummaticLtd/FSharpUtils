@@ -3,7 +3,6 @@
 open System.Numerics
 open SimpleTests
 open FSUtils
-open Tests
 
 let ParseTestList =
     TestList("Parse", [
