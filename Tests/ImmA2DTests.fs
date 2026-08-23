@@ -2,7 +2,6 @@
 
 open SimpleTests
 open FSUtils
-open Tests
 
 let private grid = ImmA2D.fromJagged [ [ 1; 2; 3 ]; [ 4; 5; 6 ] ]
 
@@ -36,9 +35,9 @@ let ImmA2DTestList =
             Assert.Equal((1, 2, 6), visited.[5]))
         Test.Sync("equality is structural", fun () ->
             Assert.Equal(grid, ImmA2D.fromJagged [ [ 1; 2; 3 ]; [ 4; 5; 6 ] ])
-            Assert.False((grid = ImmA2D.fromJagged [ [ 1; 2; 3 ] ]), "different shapes are unequal"))
+            Assert.NotEqual(grid, ImmA2D.fromJagged [ [ 1; 2; 3 ] ], "different shapes are unequal"))
         Test.Sync("shape is part of identity", fun () ->
-            Assert.False((ImmA2D.fromJagged [ [ 1; 2 ]; [ 3; 4 ] ] = ImmA2D.fromJagged [ [ 1; 2; 3; 4 ] ]), "same elements, different shape"))
+            Assert.NotEqual(ImmA2D.fromJagged [ [ 1; 2 ]; [ 3; 4 ] ], ImmA2D.fromJagged [ [ 1; 2; 3; 4 ] ], "same elements, different shape"))
         Test.Sync("A2D.init fills row-major", fun () ->
             let a = A2D.init 2 3 (fun r c -> r * 10 + c)
             Assert.Equal(12, a.[1, 2]))

@@ -3,7 +3,6 @@
 open System
 open SimpleTests
 open FSUtils
-open Tests
 
 let private utc = DateTime(2024, 6, 1, 13, 45, 30, DateTimeKind.Utc)
 

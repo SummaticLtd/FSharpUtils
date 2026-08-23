@@ -4,7 +4,6 @@ open System.Collections.Generic
 open System.Collections.Immutable
 open SimpleTests
 open FSUtils
-open Tests
 
 let DictionaryTestList =
     TestList("Dictionary", [
