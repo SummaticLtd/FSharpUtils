@@ -26,7 +26,8 @@ module NonGenericWorkaround =
 module Locking =
     /// Runs f while holding the lock, using Lock.EnterScope so the Lock type's fast path is engaged.
     /// F#'s built-in `lock` takes a Monitor lock and does not special-case Lock (dotnet/fsharp#17287).
-    let inline withLock<'T>(lock: Lock, f: unit -> 'T) : 'T =
+    /// Not inline: inlined copies in one file collide as 'f@1-n' and fail to emit with FS2014.
+    let withLock<'T>(lock: Lock, f: unit -> 'T) : 'T =
         let mutable scope = lock.EnterScope()
         try f()
         finally scope.Dispose()
