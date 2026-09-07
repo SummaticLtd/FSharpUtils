@@ -16,11 +16,15 @@ let JsonTestList =
             System.GC.Collect()
             Assert.Equal(Ok 1, Json.tryGetPropInt root "a"))
         Test.Sync("property accessors check the type", fun () ->
-            let root = parse """{"s":"x","n":1,"b":true}"""
+            let root = parse """{"s":"x","n":1,"b":true,"f":1.5}"""
             Assert.Equal(Ok "x", Json.tryGetPropStr root "s")
             Assert.Equal(Ok 1, Json.tryGetPropInt root "n")
             Assert.Equal(Ok true, Json.tryGetPropBool root "b")
-            Assert.True(Json.tryGetPropInt root "s" |> Result.isError, "string is not an int"))
+            Assert.Equal(Ok 1.5, Json.tryGetPropFloat root "f")
+            Assert.True(Json.tryGetPropInt root "s" |> Result.isError, "string is not an int")
+            Assert.True(Json.tryGetPropFloat root "s" |> Result.isError, "string is not a float"))
+        Test.Sync("tryGetPropFloat reads a whole number as a float", fun () ->
+            Assert.Equal(Ok 4.0, Json.tryGetPropFloat (parse """{"f":4}""") "f"))
         Test.Sync("a missing property is an error", fun () ->
             Assert.True(Json.tryGetProp (parse "{}") "nope" |> Result.isError, "absent property"))
         Test.Sync("reading a property of a non-object is an error, not an exception", fun () ->
