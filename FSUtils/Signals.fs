@@ -139,14 +139,6 @@ module Signal =
         f(s.Value)
         disp
 
-    /// Bind using Add. Use where objects in f have lifetime >= that of s, since a reference is created FROM s TO the closure of f.
-    /// DANGER - sometimes a signal created with Signal.map won't update when bindUsingAdd is used, but using bind seems to work.
-    ///     We don't understand why this happens at the moment, so any use of bindUsingAdd should be thoroughly tested.
-    // Add listener first, so that any events triggered during the first action will be handled afterwards
-    let bindUsingAdd (f:'a -> unit) (s:ISignal<'a>) =
-        s.ValueChanged.Add f
-        f(s.Value)
-
     let mapFromImmArray<'a,'b when 'b:equality> (f:ImmutableArray<'a> -> 'b) (arr:ImmutableArray<ISignal<'a>>) =
         let get() = f(arr |> ImmArray.map(fun s -> s.Value))
         let m = Mutable(get(), arr |> ImmArray.map(fun s -> s :> obj))
