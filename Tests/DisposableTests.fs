@@ -15,12 +15,15 @@ type private CapturingLogger() =
         member _.LogError(_: string, message: string) = errors.Add message
         member _.LogException(_: exn, _: string, message: string) = errors.Add message
 
-/// Runs f with a capturing sink installed and returns what it logged.
+/// Installed for the whole run, so no test can reach the default sink.
+let private capturing = CapturingLogger()
+do Log.Set capturing
+
+/// Returns what f logged.
 let private logged(f: unit -> unit) =
-    let logger = CapturingLogger()
-    Log.Set logger
+    let alreadyLogged = capturing.Errors.Count
     f()
-    List.ofSeq logger.Errors
+    List.ofSeq(Seq.skip alreadyLogged capturing.Errors)
 
 /// A disposable that appends its label when disposed.
 let private tracked(log: ResizeArray<string>, label: string) =

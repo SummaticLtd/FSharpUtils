@@ -149,7 +149,7 @@ module Signal =
 
     let mapFromImmArray<'a,'b when 'b:equality> (f:ImmutableArray<'a> -> 'b) (arr:ImmutableArray<ISignal<'a>>) =
         let get() = f(arr |> ImmArray.map(fun s -> s.Value))
-        let m = Mutable.create(get())
+        let m = Mutable(get(), arr |> ImmArray.map(fun s -> s :> obj))
         let wrm = WeakReference<Mutable<'b>>(m)
         let mutable removeHandlers:unit->unit = id
         let update() =

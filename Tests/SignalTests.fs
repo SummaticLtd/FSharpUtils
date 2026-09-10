@@ -1,8 +1,15 @@
 ﻿module Tests.SignalTests
 
 open System
+open System.Collections.Immutable
 open SimpleTests
 open FSUtils
+
+/// Builds a signal whose sources are reachable only through it, and a weak handle on one source.
+let private mappedFromSourcesThatGoOutOfScope() =
+    let m = Mutable.create 1
+    let sources = ImmutableArray.Create<ISignal<int>>(m.AsSignal)
+    WeakReference m, Signal.mapFromImmArray (fun (a: ImmutableArray<int>) -> a.[0] * 10) sources
 
 let SignalTestList =
     TestList("Signal", [
@@ -77,4 +84,12 @@ let SignalTestList =
             Assert.Equal(1, disposedFor.[0])
             cd.Dispose()
             Assert.Equal(2, disposedFor.Count, "and the last one goes with the owning CD"))
+
+        Test.Sync("mapFromImmArray keeps its sources alive, as map does", fun () ->
+            let source, mapped = mappedFromSourcesThatGoOutOfScope()
+            GC.Collect()
+            GC.WaitForPendingFinalizers()
+            GC.Collect()
+            Assert.True(source.IsAlive, "a source reachable only through the mapped signal is still rooted")
+            Assert.Equal(10, mapped.Value))
     ])
