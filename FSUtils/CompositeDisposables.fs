@@ -52,20 +52,20 @@ type SerialDisposable() =
     let mutable disposable = Disposable.empty
     let mutable isDisposed = false
 
-    member _.Switch(newDisp:IDisposable) =
-        if isDisposed then
-            newDisp.Dispose()
-        else
-            let current = Volatile.Read &disposable
-            Volatile.Write (&disposable, newDisp)
-            current.Dispose()
+    member private _.SwapIn(newDisp:IDisposable) =
+        let current = Volatile.Read &disposable
+        Volatile.Write (&disposable, newDisp)
+        current.Dispose()
+
+    member t.Switch(newDisp:IDisposable) =
+        if isDisposed then newDisp.Dispose() else t.SwapIn newDisp
 
     member t.Switching(newDisp:'a when 'a:>IDisposable) = t.Switch newDisp; newDisp
 
+    // Marked disposed first, so anything switched in during the release below is released at once
     member t.Dispose() =
-        // finally, so a failing inner disposable still leaves this marked disposed
-        try t.Switch(Disposable.empty)
-        finally isDisposed <- true
+        isDisposed <- true
+        t.SwapIn Disposable.empty
     member t.DisposeInner() = t.Switch(Disposable.empty)
 
 #if DEBUG

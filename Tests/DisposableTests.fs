@@ -113,6 +113,20 @@ let DisposableTestList =
             sd.Switch(tracked(log, "late"))
             Assert.Equal(1, log.Count))
 
+        Test.Sync("a SerialDisposable releases a value switched in during its own disposal", fun () ->
+            let released = ResizeArray<string>()
+            let sd = new SerialDisposable()
+            let late = tracked(released, "late")
+            sd.Switch
+                { new IDisposable with
+                    member _.Dispose() =
+                        released.Add "inner"
+                        sd.Switch late }
+            sd.Dispose()
+            Assert.Equal(2, released.Count, "the replacement handed in mid-disposal is released too")
+            Assert.Equal("inner", released.[0])
+            Assert.Equal("late", released.[1]))
+
         Test.Sync("a SerialDisposable is left disposed even when its inner value throws", fun () ->
             let log = ResizeArray<string>()
             let sd = new SerialDisposable()
