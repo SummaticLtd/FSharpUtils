@@ -16,6 +16,8 @@ let testFolders = [
         Tests.CombinatorTests.CombinatorTestList
         Tests.JsonTests.JsonTestList
         Tests.BuildersTests.BuildersTestList
+        Tests.DisposableTests.DisposableTestList
+        Tests.SignalTests.SignalTestList
     ])
 ]
 
