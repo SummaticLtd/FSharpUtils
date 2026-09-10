@@ -21,7 +21,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 | `NonGenericWorkaround` | Type-checked `Equals`/`CompareTo` for the non-generic overrides, which F# otherwise routes through structural equality ([dotnet/fsharp#9398](https://github.com/dotnet/fsharp/issues/9398)). |
 | `SimpleLazy` | `Lazy<'T>` without the trimming warnings. |
 | `Builders` | `vmaybe` and `result` computation expressions. |
-| `SimpleCD`, `ConcurrentCD`, `SerialDisposable` | Composite disposables. `SimpleCD` releases in reverse order and reports misuse; `ConcurrentCD` is thread-safe and exposes a `CancellationToken` cancelled on disposal; `SerialDisposable` holds one value at a time, releasing the last when it is replaced. |
+| `SimpleCD`, `SerialDisposable`, `CancellationScope` | Composite disposables. `SimpleCD` releases in reverse order, reports misuse, and raises an `AggregateException` carrying any failures once everything is released; `SerialDisposable` holds one value at a time, releasing the last when it is replaced; `CancellationScope` cancels a `CancellationToken` when disposed. |
 | `ISignal`, `Mutable`, `Signal` | A change-notification primitive: `map` through `map5`, `bind`, and `dispMap`, which gives every value its own `SimpleCD` so per-value resources are released when the next arrives. |
 | `Log`, `ISLogger` | A static logging facade over a sink the host installs with `Log.Set`. |
 | `withLock` | `lock` over `System.Threading.Lock`, engaging its fast path ([dotnet/fsharp#17287](https://github.com/dotnet/fsharp/issues/17287)). |

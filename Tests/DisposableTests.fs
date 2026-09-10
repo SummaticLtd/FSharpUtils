@@ -26,6 +26,10 @@ let private logged(f: unit -> unit) =
 let private tracked(log: ResizeArray<string>, label: string) =
     { new IDisposable with member _.Dispose() = log.Add label }
 
+/// A disposable that fails instead of recording, so that one bad item can be tested.
+let private failing(label: string) =
+    { new IDisposable with member _.Dispose() = failwith label }
+
 let DisposableTestList =
     TestList("Disposable", [
         Test.Sync("SimpleCD disposes what it holds, most recently added first", fun () ->
@@ -65,6 +69,29 @@ let DisposableTestList =
             let errors = logged(fun () -> cd.Dispose())
             Assert.Equal(1, errors.Length))
 
+        Test.Sync("SimpleCD releases the rest when one item throws", fun () ->
+            let log = ResizeArray<string>()
+            let cd = new SimpleCD()
+            cd.Add(tracked(log, "bottom"))
+            cd.Add(failing "boom")
+            cd.Add(tracked(log, "top"))
+            Assert.Throws((fun () -> cd.Dispose()), "the failure reaches the caller")
+            Assert.Equal(2, log.Count, "the items either side of the failure were still released")
+            Assert.Equal("top", log.[0])
+            Assert.Equal("bottom", log.[1]))
+
+        Test.Sync("SimpleCD disposal carries every failure", fun () ->
+            let cd = new SimpleCD()
+            cd.Add(failing "first")
+            cd.Add(failing "second")
+            let messages =
+                try
+                    cd.Dispose()
+                    []
+                with :? AggregateException as ex -> [ for e in ex.InnerExceptions -> e.Message ]
+            Assert.Equal(2, messages.Length, "neither failure is dropped")
+            Assert.True(List.contains "first" messages && List.contains "second" messages))
+
         Test.Sync("SerialDisposable disposes the previous value when switched", fun () ->
             let log = ResizeArray<string>()
             let sd = new SerialDisposable()
@@ -83,17 +110,41 @@ let DisposableTestList =
             sd.Switch(tracked(log, "late"))
             Assert.Equal(1, log.Count))
 
-        Test.Sync("an addition to a disposed ConcurrentCD is disposed at once", fun () ->
+        Test.Sync("a SerialDisposable is left disposed even when its inner value throws", fun () ->
             let log = ResizeArray<string>()
-            let cd = new ConcurrentCD()
-            cd.Dispose()
-            cd.Add(tracked(log, "late"))
-            Assert.Equal(1, log.Count)
-            Assert.True(cd.DisposedRequested, "disposal was recorded"))
+            let sd = new SerialDisposable()
+            sd.Switch(failing "boom")
+            Assert.Throws((fun () -> sd.Dispose()), "the failure reaches the caller")
+            sd.Switch(tracked(log, "late"))
+            Assert.Equal(1, log.Count, "a later switch is still disposed at once"))
 
-        Test.Sync("a ConcurrentCD cancels its token on disposal", fun () ->
-            let cd = new ConcurrentCD()
-            Assert.True(not cd.CancellationToken.IsCancellationRequested, "before disposal")
+        Test.Sync("a CancellationScope cancels its token on disposal", fun () ->
+            let scope = new CancellationScope()
+            Assert.True(not scope.Token.IsCancellationRequested, "before disposal")
+            Assert.True(not scope.IsCancelled)
+            scope.Dispose()
+            Assert.True(scope.Token.IsCancellationRequested, "after disposal")
+            Assert.True(scope.IsCancelled))
+
+        Test.Sync("a CancellationScope tolerates repeated disposal", fun () ->
+            let scope = new CancellationScope()
+            let token = scope.Token
+            scope.Dispose()
+            scope.Dispose()
+            Assert.True(token.IsCancellationRequested, "a token taken earlier is still readable"))
+
+        Test.Sync("a CancellationScope held by a SimpleCD is cancelled with it", fun () ->
+            let cd = new SimpleCD()
+            let scope = new CancellationScope() |> cd.Adding
             cd.Dispose()
-            Assert.True(cd.CancellationToken.IsCancellationRequested, "after disposal"))
+            Assert.True(scope.IsCancelled))
+
+        Test.Sync("switching a CancellationScope cancels the one it replaces", fun () ->
+            let sd = new SerialDisposable()
+            let first = new CancellationScope() |> sd.Switching
+            let second = new CancellationScope() |> sd.Switching
+            Assert.True(first.IsCancelled, "the replaced scope is cancelled")
+            Assert.True(not second.IsCancelled, "the current one is not")
+            sd.Dispose()
+            Assert.True(second.IsCancelled, "and it goes with the SerialDisposable"))
     ])
