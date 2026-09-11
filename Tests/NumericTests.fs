@@ -20,7 +20,9 @@ let NumericTestList =
             Assert.Equal(ValueSome 4, Numeric.tryIntegerRoot(64, 3))
             Assert.Equal(ValueNone, Numeric.tryIntegerRoot(65, 3))
             Assert.Equal(ValueNone, Numeric.tryIntegerRoot(System.Int32.MinValue, 3))
-            Assert.True(Numeric.hasFactorOfOrder(3, 125)))
+            Assert.True(Numeric.hasFactorOfOrder(3, 125))
+            Assert.Equal(ValueNone, Numeric.tryIntegerRoot(System.Int32.MaxValue, 2))
+            Assert.True(not <| Numeric.hasFactorOfOrder(2, 2147479015)))
         Test.Sync("ordinalStr handles the teens", fun () ->
             Assert.Equal("1st", Numeric.ordinalStr 1)
             Assert.Equal("2nd", Numeric.ordinalStr 2)
