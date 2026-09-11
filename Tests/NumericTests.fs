@@ -19,6 +19,7 @@ let NumericTestList =
         Test.Sync("exact roots survive float rounding", fun () ->
             Assert.Equal(ValueSome 4, Numeric.tryIntegerRoot(64, 3))
             Assert.Equal(ValueNone, Numeric.tryIntegerRoot(65, 3))
+            Assert.Equal(ValueNone, Numeric.tryIntegerRoot(System.Int32.MinValue, 3))
             Assert.True(Numeric.hasFactorOfOrder(3, 125)))
         Test.Sync("ordinalStr handles the teens", fun () ->
             Assert.Equal("1st", Numeric.ordinalStr 1)

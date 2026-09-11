@@ -78,6 +78,7 @@ module Numeric =
     let rec tryIntegerRoot(n:int, r:int): int voption =
         if n < 0 then
             if r % 2 = 0 then ValueNone
+            elif n = Int32.MinValue then ValueNone // negating it wraps to itself, so the recursion below would never end
             else tryIntegerRoot(-n, r) |> ValueOption.map (~-)
         else
             let tryRoot = toInt ((float n) ** (1./float r))
