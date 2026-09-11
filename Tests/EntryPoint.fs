@@ -12,6 +12,7 @@ let testFolders = [
         Tests.ImmA2DTests.ImmA2DTestList
         Tests.ParseTests.ParseTestList
         Tests.MeasureTests.MeasureTestList
+        Tests.NumericTests.NumericTestList
         Tests.InstantTests.InstantTestList
         Tests.CombinatorTests.CombinatorTestList
         Tests.JsonTests.JsonTestList
