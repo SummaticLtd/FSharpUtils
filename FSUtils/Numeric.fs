@@ -20,8 +20,8 @@ module Numeric =
     let clampInt(x:int, l:int, r:int) = Math.Min(Math.Max(x, l), r)
 
     /// max of f on x0 .. x1
-    let inline maximum<'a when 'a:comparison>(i0: int, i1: int, [<InlineIfLambda>] f: int -> 'a, emptyResult: 'a) =
-        let mutable m = emptyResult
+    let inline maximum<'a when 'a:comparison>(i0: int, i1: int, [<InlineIfLambda>] f: int -> 'a, lowerBound: 'a) =
+        let mutable m = lowerBound
         for i = i0 to i1 do
             let v = f i
             if v > m then m <- v
