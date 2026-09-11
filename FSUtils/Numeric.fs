@@ -47,13 +47,11 @@ module Numeric =
 
     let isCoprime(x:int, y:int) = gcd(x, y) = 1
 
-    // Factorial recursion will overflow for n>=20
-    // Alternatively add Operators.Checked to throw such cases as a normal exception (avoiding a crash):
-    // open Microsoft.FSharp.Core.Operators.Checked
+    /// ValueNone above 12!, which overflows int
     let rec fact(n:int) =
         if n < 0 then raise <| ArgumentOutOfRangeException(nameof n, "negative factorial input")
         elif n = 0 then ValueSome 1
-        elif n >= 13 then ValueNone // 13! overflows int, to support we would need int64 or BigInteger
+        elif n >= 13 then ValueNone
         else fact(n-1) |> ValueOption.map (fun f -> n * f)
 
     let isPrime(i:int) =
