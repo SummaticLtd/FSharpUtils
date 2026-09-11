@@ -66,7 +66,7 @@ module Numeric =
 
     let hasFactorOfOrder(order:int, i:int) =
         let i = abs i
-        let bound = int (Math.Pow(float i, 1./float order))
+        let bound = toInt (Math.Pow(float i, 1./float order))
         let mutable d = 2
         let mutable found = false
         while d <= bound && not found do
@@ -80,7 +80,7 @@ module Numeric =
             if r % 2 = 0 then ValueNone
             else tryIntegerRoot(-n, r) |> ValueOption.map (~-)
         else
-            let tryRoot = int ((float n) ** (1./float r))
+            let tryRoot = toInt ((float n) ** (1./float r))
             if pown tryRoot r = n then ValueSome tryRoot else ValueNone
 
     /// the first 40 primes
