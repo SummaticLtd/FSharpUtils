@@ -164,4 +164,10 @@ let DisposableTestList =
             Assert.True(not second.IsCancelled, "the current one is not")
             sd.Dispose()
             Assert.True(second.IsCancelled, "and it goes with the SerialDisposable"))
+        Test.Sync("DisposableTimer.Never does not tick", fun () ->
+            let mutable ticks = 0
+            use timer = DisposableTimer.Never.StartTimer.Invoke(Action(fun () -> ticks <- ticks + 1))
+            Threading.Thread.Sleep 20
+            Assert.Equal(0, ticks)
+            ignore timer)
     ])

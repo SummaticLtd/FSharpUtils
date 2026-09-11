@@ -24,6 +24,8 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 | `Builders` | `vmaybe` and `result` computation expressions. |
 | `SimpleCD`, `SerialDisposable`, `CancellationScope` | Composite disposables. `SimpleCD` releases in reverse order, reports misuse, and raises an `AggregateException` carrying any failures once everything is released; `SerialDisposable` holds one value at a time, releasing the last when it is replaced; `CancellationScope` cancels a `CancellationToken` when disposed. |
 | `ISignal`, `Mutable`, `Signal` | A change-notification primitive: `map` through `map5`, `bind`, and `dispMap`, which gives every value its own `SimpleCD` so per-value resources are released when the next arrives. |
+| `ToStr` | Builders for `ToString` overrides, so a case name and its contents render the same way everywhere. |
+| `DisposableTimer` | A timer behind a factory, so a caller can take `DisposableTimer.Never` and stay still instead of ticking. |
 | `Log`, `ISLogger` | A static logging facade over a sink the host installs with `Log.Set`. |
 | `withLock` | `lock` over `System.Threading.Lock`, engaging its fast path ([dotnet/fsharp#17287](https://github.com/dotnet/fsharp/issues/17287)). |
 

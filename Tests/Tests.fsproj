@@ -20,6 +20,7 @@
     <Compile Include="CombinatorTests.fs" />
     <Compile Include="JsonTests.fs" />
     <Compile Include="BuildersTests.fs" />
+    <Compile Include="ToStrTests.fs" />
     <Compile Include="DisposableTests.fs" />
     <Compile Include="SignalTests.fs" />
     <Compile Include="EntryPoint.fs" />
