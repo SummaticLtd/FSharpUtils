@@ -36,6 +36,7 @@ module Numeric =
     /// A correct modulus function for m > 0 (n % m sometimes returns a negative number)
     let modulus(n:int, m:int) = ((n % m) + m) % m
 
+    /// Throws for gcd(Int32.MinValue, 0)
     let gcd(a:int, b:int) =
         let mutable x = a
         let mutable y = b
@@ -74,7 +75,7 @@ module Numeric =
             d <- d+1
         found
 
-    /// the rth root of n
+    /// the rth root of n, for r > 0
     let rec tryIntegerRoot(n:int, r:int): int voption =
         if n < 0 then
             if r % 2 = 0 then ValueNone
@@ -114,7 +115,7 @@ module Numeric =
             let rem = num % 26
             toAlphabets ((num - rem) / 26) + string ('a' + char rem)
 
-    /// "1st", "2nd", "3rd", "11th"
+    /// "1st", "2nd", "3rd", "11th". Wrong for negatives.
     let ordinalStr(i:int) =
         let suffix =
             let i100 = i % 100
