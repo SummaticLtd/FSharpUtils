@@ -12,7 +12,7 @@ type DisposableTimer(getTimer:Func<Action, IDisposable>) =
                 f.Invoke()
             new Timer(callback, null, TimeSpan.Zero, ts) :>IDisposable
         new DisposableTimer(getTimer)
-    /// Never ticks, so animated transitions stay at the values applied synchronously when the step is shown.
+    /// Never ticks, so values stay as applied.
     static member Never =
         let getTimer(_:Action) =
             { new IDisposable with member _.Dispose() = () }
