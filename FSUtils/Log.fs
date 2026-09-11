@@ -10,10 +10,7 @@ type Log private () =
     static let combine(summary: string, details: string) =
         if String.IsNullOrEmpty details then summary else summary + " " + details
 
-    /// Set the loggers to be used for events in the app
-    /// eventLogger - used to monitor events where we care about aggregates (e.g. each time the app is started)
-    /// errorLogger - used to log errors in the app, where an exception is not generated (e.g. unexpected code paths)
-    /// exceptionLogger - log exceptions, including the full exception stack
+    /// Set the sink receiving all logging. Until a host calls this, logging goes to Diagnostics, which writes to Debug and breaks into an attached debugger on errors.
     static member Set(l:ISLogger) = logger <- l
 
     static member Diag(s:string) = logger.LogDiagnostic s
