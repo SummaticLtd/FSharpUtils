@@ -5,7 +5,9 @@ open System.Threading
 open System.Runtime.CompilerServices
 open System.Collections.Generic
 
-/// A simple CompositeDisposable, where additions should not be performed after disposal, and disposal should only be done once. Disposal blocks until everything is released, then raises an AggregateException carrying any failures, so it is unsuitable for a tight loop (e.g. a slider update).
+/// A simple CompositeDisposable, where additions should not be performed after disposal, and disposal should only be done once.
+// Should not be used where disposals need to happen in a tight loop (e.g. on a slider update),
+// since disposal runs synchronously and will block the current thread
 [<Sealed>]
 type SimpleCD([<CallerFilePath>] ?invokedFromFile : string, [<CallerLineNumber>] ?invokedFromLine : int) =
     let disps = Stack<IDisposable>()
