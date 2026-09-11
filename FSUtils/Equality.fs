@@ -5,13 +5,16 @@ open System.Collections.Immutable
 
 [<RequireQualifiedAccess>]
 module Hash =
-    // method taken from https://github.com/dotnet/runtime/blob/22068a8f96d6d1c01b26db70fd24a433e1fdd5ef/src/libraries/System.Private.CoreLib/src/System/Array.cs#L755
+    /// Hashes at most the last 8 elements, as the runtime's own array hash does, so arrays
+    /// differing only earlier than that collide.
+    // https://github.com/dotnet/runtime/blob/22068a8f96d6d1c01b26db70fd24a433e1fdd5ef/src/libraries/System.Private.CoreLib/src/System/Array.cs#L755
     let immArray<'a>(ia:ImmutableArray<'a>) =
         let h = HashCode()
         let start = if ia.Length >= 8 then ia.Length - 8 else 0
         for i = start to ia.Length - 1 do
             h.Add(ia.[i])
         h.ToHashCode()
+    /// As immArray: hashes at most the last 8 elements.
     let immArrayBy<'a> (f:'a -> int) (ia:ImmutableArray<'a>) =
         let h = HashCode()
         let start = if ia.Length >= 8 then ia.Length - 8 else 0
