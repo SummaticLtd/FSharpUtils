@@ -33,7 +33,7 @@ module Numeric =
             acc <- 'a.op_CheckedAddition(acc, f i)
         acc
 
-    /// A correct modulus function (n % m sometimes returns a negative number)
+    /// A correct modulus function for m > 0 (n % m sometimes returns a negative number)
     let modulus(n:int, m:int) = ((n % m) + m) % m
 
     let gcd(a:int, b:int) =

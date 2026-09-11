@@ -16,7 +16,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 | `Parse` | `voption`-returning, invariant-culture parsers for `int`, `float`, `Guid`, `Uri` and `Complex`. |
 | `Dictionary`, `ImmutableDictionary` | `tryFind` returning `voption`, and `addOrReplace`. |
 | `Json` | `Result`-returning `System.Text.Json` accessors that check the value kind instead of throwing. |
-| `Numeric` | Clamps, a never-negative `modulus`, `gcd`, `isPrime`, exact integer roots, and `toRoman`/`toAlphabets`/`ordinalStr`. `sum` throws rather than wrapping on overflow. |
+| `Numeric` | Clamps, a `modulus` never negative for a positive divisor, `gcd`, `isPrime`, exact integer roots, and `toRoman`/`toAlphabets`/`ordinalStr`. `sum` throws rather than wrapping on overflow. |
 | `Measure` | Conversions that keep units of measure attached, so `float`/`float32` casts cannot silently drop them. |
 | `Seq`, `Array` | `distinctPhysical` (distinct by reference rather than by an overridden `Equals`), `countWhere` and `maxWithSafe`. |
 | `NonGenericWorkaround` | Type-checked `Equals`/`CompareTo` for the non-generic overrides, which F# otherwise routes through structural equality ([dotnet/fsharp#9398](https://github.com/dotnet/fsharp/issues/9398)). |
