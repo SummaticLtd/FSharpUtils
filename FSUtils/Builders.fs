@@ -7,7 +7,7 @@ type VMaybeBuilder() =
     member _.ReturnFrom(x:'a voption) = x
     member _.Zero () = ValueNone
 
-/// Maybe monad, over voption.
+/// Maybe monad.
 let vmaybe = VMaybeBuilder()
 
 [<Sealed>]

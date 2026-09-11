@@ -7,7 +7,7 @@ open System.Collections.Immutable
 [<RequireQualifiedAccess>]
 module Numeric =
 
-    /// Rounds to the nearest int, to even on .5. Throws outside int range.
+    /// Round to the nearest int (to even on .5).
     let inline toInt(x: float) = Convert.ToInt32 x
 
     /// Clamps x between l and r, where l <= r
@@ -19,7 +19,7 @@ module Numeric =
     /// Clamps x between l and r, where l <= r
     let clampInt(x:int, l:int, r:int) = Math.Min(Math.Max(x, l), r)
 
-    /// max of f over i0 .. i1, or emptyResult if that beats every value
+    /// max of f on x0 .. x1
     let inline maximum<'a when 'a:comparison>(i0: int, i1: int, [<InlineIfLambda>] f: int -> 'a, emptyResult: 'a) =
         let mutable m = emptyResult
         for i = i0 to i1 do
@@ -27,14 +27,13 @@ module Numeric =
             if v > m then m <- v
         m
 
-    /// Sum of f over i0 .. i1. Throws rather than wrapping on overflow.
     let inline sum<'a when 'a :> INumber<'a>>(i0: int, i1: int, [<InlineIfLambda>] f: int -> 'a) : 'a =
         let mutable acc = 'a.Zero
         for i = i0 to i1 do
             acc <- 'a.op_CheckedAddition(acc, f i)
         acc
 
-    /// A modulus that is never negative, unlike %
+    /// A correct modulus function (n % m sometimes returns a negative number)
     let modulus(n:int, m:int) = ((n % m) + m) % m
 
     let gcd(a:int, b:int) =
@@ -48,11 +47,13 @@ module Numeric =
 
     let isCoprime(x:int, y:int) = gcd(x, y) = 1
 
-    /// ValueNone above 12!, which overflows int
+    // Factorial recursion will overflow for n>=20
+    // Alternatively add Operators.Checked to throw such cases as a normal exception (avoiding a crash):
+    // open Microsoft.FSharp.Core.Operators.Checked
     let rec fact(n:int) =
         if n < 0 then raise <| ArgumentOutOfRangeException(nameof n, "negative factorial input")
         elif n = 0 then ValueSome 1
-        elif n >= 13 then ValueNone
+        elif n >= 13 then ValueNone // 13! overflows int, to support we would need int64 or BigInteger
         else fact(n-1) |> ValueOption.map (fun f -> n * f)
 
     let isPrime(i:int) =
@@ -65,7 +66,6 @@ module Numeric =
             d <- d+1
         not found
 
-    /// Whether abs i is divisible by some d^order, d > 1
     let hasFactorOfOrder(order:int, i:int) =
         let i = abs i
         let bound = int (Math.Pow(float i, 1./float order))
@@ -76,7 +76,7 @@ module Numeric =
             d <- d+1
         found
 
-    /// The exact rth root of n, when there is one
+    /// the rth root of n
     let rec tryIntegerRoot(n:int, r:int): int voption =
         if n < 0 then
             if r % 2 = 0 then ValueNone
@@ -85,7 +85,7 @@ module Numeric =
             let tryRoot = int ((float n) ** (1./float r))
             if pown tryRoot r = n then ValueSome tryRoot else ValueNone
 
-    /// The first 40 primes
+    /// the first 40 primes
     let smallPrimes =
         ImmutableArray.Create(
             2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
@@ -101,13 +101,11 @@ module Numeric =
             ("x", 10), ("ix", 9), ("v", 5), ("iv", 4), ("i", 1)
         )
 
-    /// Lowercase Roman numerals, empty below 1
     let rec toRoman(x:int) =
         match romans |> ImmArray.tryFind (fun (_, n) -> x >= n) with
         | ValueSome (init, n) -> init + toRoman(x-n)
         | ValueNone -> ""
 
-    /// Spreadsheet-style column names: 1 is "a", 27 is "aa". Empty below 1.
     let rec toAlphabets(x:int) =
         if x <= 0 then ""
         else
@@ -115,7 +113,6 @@ module Numeric =
             let rem = num % 26
             toAlphabets ((num - rem) / 26) + string ('a' + char rem)
 
-    /// "1st", "2nd", "13th"
     let ordinalStr(i:int) =
         let suffix =
             let i100 = i % 100

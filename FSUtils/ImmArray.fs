@@ -97,7 +97,6 @@ module ImmArray =
         let comparer = Comparison<'a>(fun x y -> (p y:>IComparable<'Key>).CompareTo(p x))
         ia.Sort(comparer)
     /// Returns ValueSome(the unique element of an immutableArray) or ValueNone if empty; throws if there is more than one element.
-    /// ValueNone if empty and the element if there is exactly one; throws if there is more than one.
     let toVoption<'a> (ia:ImmutableArray<'a>) =
         if ia.Length = 0 then ValueNone
         elif ia.Length = 1 then ValueSome(ia.[0])
@@ -150,7 +149,7 @@ module ImmArray =
         while count < ia.Length && f ia.[count] do
             count <- count + 1
         ia.Range(0, count - 1)
-    /// The first count elements, or all of them if there are fewer. Never throws.
+    /// Takes the first count elements of the array, or the whole array if it is shorter
     let truncate<'a> (count:int) (ia:ImmutableArray<'a>) =
         let count' = min count ia.Length
         ia.Range(0, count' - 1)
