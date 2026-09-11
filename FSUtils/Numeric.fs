@@ -99,11 +99,13 @@ module Numeric =
             ("x", 10), ("ix", 9), ("v", 5), ("iv", 4), ("i", 1)
         )
 
+    /// Lowercase Roman numerals, empty below 1
     let rec toRoman(x:int) =
         match romans |> ImmArray.tryFind (fun (_, n) -> x >= n) with
         | ValueSome (init, n) -> init + toRoman(x-n)
         | ValueNone -> ""
 
+    /// Spreadsheet column names: 1 is "a", 27 is "aa", empty below 1
     let rec toAlphabets(x:int) =
         if x <= 0 then ""
         else
@@ -111,6 +113,7 @@ module Numeric =
             let rem = num % 26
             toAlphabets ((num - rem) / 26) + string ('a' + char rem)
 
+    /// "1st", "2nd", "3rd", "11th"
     let ordinalStr(i:int) =
         let suffix =
             let i100 = i % 100
