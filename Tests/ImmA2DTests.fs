@@ -41,4 +41,8 @@ let ImmA2DTestList =
         Test.Sync("A2D.init fills row-major", fun () ->
             let a = A2D.init 2 3 (fun r c -> r * 10 + c)
             Assert.Equal(12, a.[1, 2]))
+        Test.Sync("A2D.tryFindIndex searches row-major", fun () ->
+            let a = A2D.init 2 3 (fun r c -> r + c)
+            Assert.Equal(ValueSome(struct(0, 2)), a |> A2D.tryFindIndex(fun x -> x = 2))
+            Assert.Equal(ValueNone, a |> A2D.tryFindIndex(fun x -> x = 4)))
     ])

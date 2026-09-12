@@ -35,6 +35,19 @@ module A2D =
         let rows = arr.GetLength(0)
         let cols = arr.GetLength(1)
         init rows cols (fun r c -> f arr.[r, c])
+    /// Searches in row-major order.
+    let inline tryFindIndex<'T> ([<InlineIfLambda>] f: 'T -> bool) (arr: 'T[,]) : struct(int * int) voption =
+        let rows = arr.GetLength(0)
+        let cols = arr.GetLength(1)
+        let mutable found: struct(int * int) voption = ValueNone
+        let mutable r = 0
+        while found.IsNone && r < rows do
+            let mutable c = 0
+            while found.IsNone && c < cols do
+                if f arr.[r, c] then found <- ValueSome(struct(r, c))
+                c <- c + 1
+            r <- r + 1
+        found
 
 type ImmA2D<'T when 'T: equality>(rows: int, cols: int, elements: ImmutableArray<'T>) =
     // Unlike Equals.immArray, which assumes IEquatable<'T>, this one works for 'a when 'a: equality.
