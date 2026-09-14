@@ -42,6 +42,15 @@ module Json =
                     value.GetInt32() |> Ok
                 with _ -> Error ("Property '" + prop + "' is not a valid integer")
             else Error ("Property '" + prop + "' is not a number"))
+    /// Try to get a property as an int64 from a JsonElement
+    let tryGetPropInt64 (je: JsonElement) (prop: string) =
+        tryGetProp je prop
+        |> Result.bind(fun value ->
+            if value.ValueKind = JsonValueKind.Number then
+                try
+                    value.GetInt64() |> Ok
+                with _ -> Error ("Property '" + prop + "' is not a valid integer")
+            else Error ("Property '" + prop + "' is not a number"))
     /// Try to get a property as a float from a JsonElement
     let tryGetPropFloat (je: JsonElement) (prop: string) =
         tryGetProp je prop

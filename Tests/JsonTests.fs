@@ -23,6 +23,11 @@ let JsonTestList =
             Assert.Equal(Ok 1.5, Json.tryGetPropFloat root "f")
             Assert.True(Json.tryGetPropInt root "s" |> Result.isError, "string is not an int")
             Assert.True(Json.tryGetPropFloat root "s" |> Result.isError, "string is not a float"))
+        Test.Sync("tryGetPropInt64 reads values beyond the int range", fun () ->
+            let root = parse """{"n":3000000000,"f":1.5}"""
+            Assert.Equal(Ok 3000000000L, Json.tryGetPropInt64 root "n")
+            Assert.True(Json.tryGetPropInt root "n" |> Result.isError, "too large for an int")
+            Assert.True(Json.tryGetPropInt64 root "f" |> Result.isError, "fraction is not an int64"))
         Test.Sync("tryGetPropFloat reads a whole number as a float", fun () ->
             Assert.Equal(Ok 4.0, Json.tryGetPropFloat (parse """{"f":4}""") "f"))
         Test.Sync("a missing property is an error", fun () ->
