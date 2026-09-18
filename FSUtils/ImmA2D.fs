@@ -3,6 +3,7 @@
 open System
 open System.Collections.Immutable
 open System.Collections.Generic
+open System.Runtime.CompilerServices
 
 [<AutoOpen>]
 module private Helpers =
@@ -11,11 +12,13 @@ module private Helpers =
     let inline getCol(cols: int, ind: int) : int = ind % cols
     let inline getInd(cols: int, row: int, col: int) : int = row * cols + col
 
-    let checkInRange(rows: int, cols: int, row: int, col: int) =
-        if row < 0 || row >= rows then
-            raise (IndexOutOfRangeException("Row index " + row.ToString() + " is out of bounds."))
-        if col < 0 || col >= cols then
-            raise (IndexOutOfRangeException("Column index " + col.ToString() + " is out of bounds."))
+    [<MethodImpl(MethodImplOptions.NoInlining)>]
+    let rowOutOfRange<'T>(row: int) : 'T =
+        raise (IndexOutOfRangeException("Row index " + row.ToString() + " is out of bounds."))
+
+    [<MethodImpl(MethodImplOptions.NoInlining)>]
+    let colOutOfRange<'T>(col: int) : 'T =
+        raise (IndexOutOfRangeException("Column index " + col.ToString() + " is out of bounds."))
 
 /// 0-based Array2D functions, to avoid trimming issues. https://github.com/fsharp/fslang-suggestions/issues/1454
 module A2D =
@@ -60,13 +63,20 @@ type ImmA2D<'T when 'T: equality>(rows: int, cols: int, elements: ImmutableArray
                 if equals then
                     equals <- ia1.[i] = ia2.[i]
             equals
+    // Item's unsigned compares rely on this.
+    do if rows < 0 || cols < 0 then
+        raise (ArgumentOutOfRangeException(null, "Dimensions must be nonnegative, not " + rows.ToString() + " x " + cols.ToString() + "."))
     member _.Rows = rows
     member _.Cols = cols
     /// Elements, in row-major order
     member _.Elements = elements
     member _.Item(row: int, col: int) : 'T =
-        checkInRange(rows, cols, row, col)
-        elements.[getInd(cols, row, col)]
+        // uint32 reinterprets the same 32 bits at no cost, so a negative index
+        // becomes a value above Int32.MaxValue. One unsigned compare per axis
+        // therefore checks both 0 <= index and index < length.
+        if uint32 row >= uint32 rows then rowOutOfRange(row)
+        elif uint32 col >= uint32 cols then colOutOfRange(col)
+        else elements.[getInd(cols, row, col)]
     interface IEquatable<ImmA2D<'T>> with
         member _.Equals(Unchecked.NonNullQuick other) =
             rows = other.Rows &&
