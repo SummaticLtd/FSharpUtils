@@ -22,7 +22,9 @@ let ImmA2DTestList =
             Assert.Throws((fun () -> ImmA2D.fromJaggedWithKnownCols 2 [ [ 1; 2; 3 ] ] |> ignore), "wrong width"))
         Test.Sync("indexing out of bounds throws", fun () ->
             Assert.Throws((fun () -> grid.[2, 0] |> ignore), "row out of range")
-            Assert.Throws((fun () -> grid.[0, 3] |> ignore), "column out of range"))
+            Assert.Throws((fun () -> grid.[0, 3] |> ignore), "column out of range")
+            Assert.Throws((fun () -> grid.[-1, 0] |> ignore), "negative row")
+            Assert.Throws((fun () -> grid.[1, -1] |> ignore), "negative column"))
         Test.Sync("mapi sees row then column", fun () ->
             let indices = grid |> ImmA2D.mapi(fun r c _ -> (r, c))
             Assert.Equal((0, 2), indices.[0, 2])
