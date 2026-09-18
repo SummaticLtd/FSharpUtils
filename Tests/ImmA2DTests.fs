@@ -25,6 +25,9 @@ let ImmA2DTestList =
             Assert.Throws((fun () -> grid.[0, 3] |> ignore), "column out of range")
             Assert.Throws((fun () -> grid.[-1, 0] |> ignore), "negative row")
             Assert.Throws((fun () -> grid.[1, -1] |> ignore), "negative column"))
+        Test.Sync("negative dimensions are rejected", fun () ->
+            Assert.Throws((fun () -> ImmA2D.create -1 -1 0 |> ignore), "negative rows and columns")
+            Assert.Throws((fun () -> ImmA2D.create 0 -1 0 |> ignore), "negative columns"))
         Test.Sync("mapi sees row then column", fun () ->
             let indices = grid |> ImmA2D.mapi(fun r c _ -> (r, c))
             Assert.Equal((0, 2), indices.[0, 2])

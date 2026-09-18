@@ -63,6 +63,9 @@ type ImmA2D<'T when 'T: equality>(rows: int, cols: int, elements: ImmutableArray
                 if equals then
                     equals <- ia1.[i] = ia2.[i]
             equals
+    // Item's unsigned compares rely on this.
+    do if rows < 0 || cols < 0 then
+        raise (ArgumentOutOfRangeException(null, "Dimensions must be nonnegative, not " + rows.ToString() + " x " + cols.ToString() + "."))
     member _.Rows = rows
     member _.Cols = cols
     /// Elements, in row-major order
