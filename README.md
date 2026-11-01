@@ -19,6 +19,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 | `Numeric` | Clamps, a `modulus` never negative for a positive divisor, `gcd`, `isPrime`, exact integer roots, and `toRoman`/`toAlphabets`/`ordinalStr`. `sum` throws rather than wrapping on overflow. |
 | `Measure` | Conversions that keep units of measure attached, so `float`/`float32` casts cannot silently drop them. |
 | `Seq`, `Array` | `distinctPhysical` (distinct by reference rather than by an overridden `Equals`), `countWhere` and `maxWithSafe`. |
+| `Range` | `exists` and `forall` over `0 .. n - 1`, without allocating a range. |
 | `NonGenericWorkaround` | Type-checked `Equals`/`CompareTo` for the non-generic overrides, which F# otherwise routes through structural equality ([dotnet/fsharp#9398](https://github.com/dotnet/fsharp/issues/9398)). |
 | `SimpleLazy` | `Lazy<'T>` without the trimming warnings. |
 | `Builders` | `vmaybe` and `result` computation expressions. |

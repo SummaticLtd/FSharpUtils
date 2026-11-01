@@ -6,6 +6,7 @@ let testFolders = [
     TestFolder("Tests", [
         Tests.CoreTests.CoreTestList
         Tests.DictionaryTests.DictionaryTestList
+        Tests.RangeTests.RangeTestList
         Tests.SeqTests.SeqTestList
         Tests.ArrayTests.ArrayTestList
         Tests.ImmArrayTests.ImmArrayTestList
