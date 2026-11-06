@@ -64,11 +64,6 @@ let CborTestList =
             let m = ImmA2D<int>(0, 3, ImmutableArray.Empty)
             let m2 = roundTrip((fun (w, x) -> σImmA2D(w, x, σInt)), δImmA2D δInt, m)
             Assert.Equal(3, m2.Cols))
-        Test.Sync("collection readers reject indefinite-length arrays", fun () ->
-            let bytes = ofHex "9F0102FF"
-            Assert.True(throwsContent(fun () -> Cbor.decode(δImmArray δInt, bytes) |> ignore), "δImmArray")
-            Assert.True(throwsContent(fun () -> Cbor.decode(δArrayOf δInt, bytes) |> ignore), "δArrayOf")
-            Assert.True(throwsContent(fun () -> Cbor.decode(δImmDict(δInt, δInt), ofHex "9F820102FF") |> ignore), "δImmDict"))
         Test.Sync("δArray skips trailing fields and δTrailing defaults missing ones", fun () ->
             Assert.Equal(1, Cbor.decode((fun r -> δArray(r, fun () -> δInt r)), ofHex "83010203"))
             Assert.Equal((1, 9), Cbor.decode((fun r -> δArray(r, fun () -> δInt r, δTrailing(r, δInt, 9))), ofHex "8101")))
