@@ -4,7 +4,6 @@ open System
 open System.Collections.Generic
 open System.Collections.Immutable
 open System.Formats.Cbor
-open System.Runtime.InteropServices
 
 /// σX writes an X to a CborWriter; δX reads one from a CborReader.
 module Cbor =
@@ -22,24 +21,15 @@ module Cbor =
 
     let decodeCompressed<'a>(δ: CborReader -> 'a, data: byte[]) = decode(δ, ReadOnlyMemory(Deflate.decompress data))
 
-    [<Literal>]
-    let private maxDepth = 500
-
     /// Deeper input would overflow the stack of the recursive readers. TODO: use CborReaderOptions.MaxDepth from System.Formats.Cbor 11.
     let readStartArray(r: CborReader) =
         let n = r.ReadStartArray()
-        if r.CurrentDepth > maxDepth then raise(CborContentException "CBOR nested deeper than 500")
+        if r.CurrentDepth > 500 then raise(CborContentException "CBOR nested deeper than 500")
         n
 
-    /// Reads the elements of an opened array of definite length n or, if null, indefinite length; then closes it.
-    let inline private δElements(r: CborReader, n: Nullable<int>, [<InlineIfLambda>] readElement: unit -> unit) =
-        if n.HasValue then
-            for _ in 1 .. n.Value do
-                readElement()
-        else
-            while r.PeekState() <> CborReaderState.EndArray do
-                readElement()
-        r.ReadEndArray()
+    let private readStartDefiniteArray(r: CborReader) =
+        let n = readStartArray r
+        if n.HasValue then n.Value else raise(CborContentException "Expected a definite-length array")
 
     /// Writes the values written by body as one array.
     let inline σArray(w: CborWriter, [<InlineIfLambda>] body: unit -> unit) =
@@ -151,32 +141,41 @@ module Cbor =
     let σImmArray<'a>(w: CborWriter, xs: ImmutableArray<'a>, σ: CborWriter * 'a -> unit) =
         σDefinite(w, xs.Length, fun () -> for x in xs do σ(w, x))
     let δImmArray<'a> (δ: CborReader -> 'a) (r: CborReader) : ImmutableArray<'a> =
-        let n = readStartArray r
-        let b = if n.HasValue then ImmutableArray.CreateBuilder<'a>(n.Value) else ImmutableArray.CreateBuilder<'a>()
-        δElements(r, n, fun () -> b.Add(δ r))
-        b.DrainToImmutable()
+        let n = readStartDefiniteArray r
+        let b = ImmutableArray.CreateBuilder<'a>(n)
+        for _ in 1 .. n do
+            b.Add(δ r)
+        r.ReadEndArray()
+        b.MoveToImmutable()
 
     let σArrayOf<'a>(w: CborWriter, xs: 'a[], σ: CborWriter * 'a -> unit) =
         σDefinite(w, xs.Length, fun () -> for x in xs do σ(w, x))
     let δArrayOf<'a> (δ: CborReader -> 'a) (r: CborReader) : 'a[] =
-        // Not a copy, which is safe as nothing else holds the ImmutableArray.
-        ImmutableCollectionsMarshal.AsArray(δImmArray δ r) |> nonNull
+        let n = readStartDefiniteArray r
+        let a = Array.zeroCreate<'a> n
+        for i in 0 .. n - 1 do
+            a.[i] <- δ r
+        r.ReadEndArray()
+        a
 
     let σList<'a>(w: CborWriter, xs: 'a list, σ: CborWriter * 'a -> unit) =
-        σArray(w, fun () -> for x in xs do σ(w, x))
+        σArray(w, fun () ->
+            for x in xs do
+                σ(w, x))
     let δList<'a> (δ: CborReader -> 'a) (r: CborReader) : 'a list =
         List.ofArray(δArrayOf δ r)
 
     let σSeq<'a>(w: CborWriter, xs: IReadOnlyCollection<'a>, σ: CborWriter * 'a -> unit) =
         σDefinite(w, xs.Count, fun () -> for x in xs do σ(w, x))
 
-    /// Each entry is a [key, value] array.
     let σImmDict<'k, 'v when 'k: not null and 'k: equality>(w: CborWriter, d: ImmutableDictionary<'k, 'v>, σKey: CborWriter * 'k -> unit, σValue: CborWriter * 'v -> unit) =
         σSeq(w, d, fun (w, kv) -> σArray(w, fun () -> σKey(w, kv.Key); σValue(w, kv.Value)))
     let δImmDict<'k, 'v when 'k: not null and 'k: equality> (δKey: CborReader -> 'k, δValue: CborReader -> 'v) (r: CborReader) =
         let b = ImmutableDictionary.CreateBuilder<'k, 'v>()
-        let n = readStartArray r
-        δElements(r, n, fun () -> δArray(r, fun () -> b.Add(δKey r, δValue r)))
+        let n = readStartDefiniteArray r
+        for _ in 1 .. n do
+            δArray(r, fun () -> b.Add(δKey r, δValue r))
+        r.ReadEndArray()
         b.ToImmutable()
 
     // Rows and cols are stored explicitly, so an array with 0 rows keeps its column count.
