@@ -16,6 +16,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 | `Parse` | `voption`-returning, invariant-culture parsers for `int`, `float`, `Guid`, `Uri` and `Complex`. |
 | `Dictionary`, `ImmutableDictionary` | `tryFind` returning `voption`, and `addOrReplace`. |
 | `Json` | `Result`-returning `System.Text.Json` accessors that check the value kind instead of throwing. |
+| `Cbor`, `Deflate` | `System.Formats.Cbor` combinators: `σX` writes an X, `δX` reads one, for primitives, `Guid`, `Instant`, options, collections, `ImmA2D`, `Choice` and `Result`. Readers skip trailing fields from newer writers, and `δTrailing` defaults fields older writers omitted. `Cbor.encodeCompressed` adds Deflate. |
 | `Numeric` | Clamps, a `modulus` never negative for a positive divisor, `gcd`, `isPrime`, exact integer roots, and `toRoman`/`toAlphabets`/`ordinalStr`. `sum` throws rather than wrapping on overflow. |
 | `Measure` | Conversions that keep units of measure attached, so `float`/`float32` casts cannot silently drop them. |
 | `Seq`, `Array` | `distinctPhysical` (distinct by reference rather than by an overridden `Equals`), `countWhere` and `maxWithSafe`. |
