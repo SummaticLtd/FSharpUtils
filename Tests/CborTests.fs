@@ -42,9 +42,6 @@ let CborTestList =
             Assert.Equal("82F403", hex(Cbor.encode((fun (w, x) -> σChoice(w, x, σString, σInt)), Choice2Of2 3)))
             Assert.Equal("8401020506", hex(Cbor.encode((fun (w, x) -> σImmA2D(w, x, σInt)), ImmA2D(1, 2, ImmutableArray.Create(5, 6)))))
             Assert.Equal("D8255000112233445566778899AABBCCDDEEFF", hex(Cbor.encode(σGuid, Guid "00112233-4455-6677-8899-aabbccddeeff"))))
-        Test.Sync("a whole-number float reads as a float", fun () ->
-            Assert.Equal(4.0, Cbor.decode(δFloat, ofHex "04"))
-            Assert.Equal(-1.0f, Cbor.decode(δFloat32, ofHex "20")))
         Test.Sync("δChar and δByte reject out-of-range values", fun () ->
             Assert.Throws((fun () -> Cbor.decode(δChar, ofHex "20") |> ignore), "-1 is not a char")
             Assert.Throws((fun () -> Cbor.decode(δByte, ofHex "190100") |> ignore), "256 is not a byte"))

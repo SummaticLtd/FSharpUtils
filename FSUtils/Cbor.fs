@@ -73,16 +73,11 @@ module Cbor =
     let σUInt(w: CborWriter, i: uint32) = w.WriteUInt32 i
     let δUInt(r: CborReader) = r.ReadUInt32()
 
-    let private isInteger(r: CborReader) =
-        match r.PeekState() with
-        | CborReaderState.UnsignedInteger | CborReaderState.NegativeInteger -> true
-        | _ -> false
-
     let σFloat(w: CborWriter, f: float) = w.WriteDouble f
-    let δFloat(r: CborReader) = if isInteger r then float(r.ReadInt64()) else r.ReadDouble()
+    let δFloat(r: CborReader) = r.ReadDouble()
 
     let σFloat32(w: CborWriter, f: float32) = w.WriteSingle f
-    let δFloat32(r: CborReader) = if isInteger r then float32(r.ReadInt64()) else r.ReadSingle()
+    let δFloat32(r: CborReader) = r.ReadSingle()
 
     let σBool(w: CborWriter, b: bool) = w.WriteBoolean b
     let δBool(r: CborReader) = r.ReadBoolean()
