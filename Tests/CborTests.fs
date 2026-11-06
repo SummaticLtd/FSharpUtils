@@ -10,6 +10,7 @@ open FSUtils.Cbor
 let private hex(bytes: byte[]) = Convert.ToHexString bytes
 let private ofHex(s: string) = ReadOnlyMemory(Convert.FromHexString s)
 let private roundTrip(σ, δ, x) = Cbor.decode(δ, ReadOnlyMemory(Cbor.encode(σ, x)))
+let private assertRoundTrip(σ, δ, x) = Assert.Equal(x, roundTrip(σ, δ, x))
 let private throwsContent(f: unit -> unit) =
     try f(); false
     with :? CborContentException -> true
@@ -20,19 +21,19 @@ let private nested(depth: int) = ofHex(String.replicate (depth - 1) "81" + "80")
 let CborTestList =
     TestList("Cbor", [
         Test.Sync("primitives round-trip", fun () ->
-            Assert.Equal("héllo", roundTrip(σString, δString, "héllo"))
-            Assert.Equal('é', roundTrip(σChar, δChar, 'é'))
-            Assert.Equal(-7, roundTrip(σInt, δInt, -7))
-            Assert.Equal(255uy, roundTrip(σByte, δByte, 255uy))
-            Assert.Equal(-300s, roundTrip(σInt16, δInt16, -300s))
-            Assert.Equal(Int64.MinValue, roundTrip(σInt64, δInt64, Int64.MinValue))
-            Assert.Equal(UInt32.MaxValue, roundTrip(σUInt, δUInt, UInt32.MaxValue))
-            Assert.Equal(1.5, roundTrip(σFloat, δFloat, 1.5))
-            Assert.Equal(1.5f, roundTrip(σFloat32, δFloat32, 1.5f))
-            Assert.Equal(true, roundTrip(σBool, δBool, true))
-            Assert.Equal(DayOfWeek.Friday, roundTrip(σEnum, δEnum, DayOfWeek.Friday))
-            Assert.Equal(TimeSpan.FromMinutes 3.0, roundTrip(σTimeSpan, δTimeSpan, TimeSpan.FromMinutes 3.0))
-            Assert.Equal(Numerics.Complex(1.0, -2.0), roundTrip(σComplex, δComplex, Numerics.Complex(1.0, -2.0)))
+            assertRoundTrip(σString, δString, "héllo")
+            assertRoundTrip(σChar, δChar, 'é')
+            assertRoundTrip(σInt, δInt, -7)
+            assertRoundTrip(σByte, δByte, 255uy)
+            assertRoundTrip(σInt16, δInt16, -300s)
+            assertRoundTrip(σInt64, δInt64, Int64.MinValue)
+            assertRoundTrip(σUInt, δUInt, UInt32.MaxValue)
+            assertRoundTrip(σFloat, δFloat, 1.5)
+            assertRoundTrip(σFloat32, δFloat32, 1.5f)
+            assertRoundTrip(σBool, δBool, true)
+            assertRoundTrip(σEnum, δEnum, DayOfWeek.Friday)
+            assertRoundTrip(σTimeSpan, δTimeSpan, TimeSpan.FromMinutes 3.0)
+            assertRoundTrip(σComplex, δComplex, Numerics.Complex(1.0, -2.0))
             let i = Instant.Now
             Assert.Equal(i.DT, roundTrip(σInstant, δInstant, i).DT))
         Test.Sync("the format is fixed", fun () ->
@@ -49,17 +50,17 @@ let CborTestList =
             Assert.Throws((fun () -> Cbor.decode(δByte, ofHex "190100") |> ignore), "256 is not a byte"))
         Test.Sync("options and collections round-trip", fun () ->
             Assert.True(roundTrip((fun (w, x) -> σOpt(w, x, σInt)), δOpt δInt, Some 3) = Some 3, "Some")
-            Assert.Equal(ValueNone, roundTrip((fun (w, x) -> σVOpt(w, x, σInt)), δVOpt δInt, ValueNone))
+            assertRoundTrip((fun (w, x) -> σVOpt(w, x, σInt)), δVOpt δInt, ValueNone)
             let ia = ImmutableArray.Create(1, 2, 3)
             Assert.Equal([1; 2; 3], List.ofSeq(roundTrip((fun (w, x) -> σImmArray(w, x, σInt)), δImmArray δInt, ia)))
             Assert.Equal<int list>([1; 2], List.ofArray(roundTrip((fun (w, x) -> σArrayOf(w, x, σInt)), δArrayOf δInt, [| 1; 2 |])))
-            Assert.Equal(["a"; "b"], roundTrip((fun (w, x) -> σList(w, x, σString)), δList δString, ["a"; "b"]))
+            assertRoundTrip((fun (w, x) -> σList(w, x, σString)), δList δString, ["a"; "b"])
             let d = ImmutableDictionary.CreateRange([ Collections.Generic.KeyValuePair("a", 1); Collections.Generic.KeyValuePair("b", 2) ])
             let d2 = roundTrip((fun (w, x) -> σImmDict(w, x, σString, σInt)), δImmDict(δString, δInt), d)
             Assert.Equal(2, d2.Count)
             Assert.Equal(2, d2.["b"])
-            Assert.Equal(Error "e", roundTrip((fun (w, x) -> σResult(w, x, σInt, σString)), δResult(δInt, δString), Error "e"))
-            Assert.Equal(Choice1Of2 "x", roundTrip((fun (w, x) -> σChoice(w, x, σString, σInt)), δChoice(δString, δInt), Choice1Of2 "x")))
+            assertRoundTrip((fun (w, x) -> σResult(w, x, σInt, σString)), δResult(δInt, δString), Error "e")
+            assertRoundTrip((fun (w, x) -> σChoice(w, x, σString, σInt)), δChoice(δString, δInt), Choice1Of2 "x"))
         Test.Sync("an empty ImmA2D keeps its column count", fun () ->
             let m = ImmA2D<int>(0, 3, ImmutableArray.Empty)
             let m2 = roundTrip((fun (w, x) -> σImmA2D(w, x, σInt)), δImmA2D δInt, m)
