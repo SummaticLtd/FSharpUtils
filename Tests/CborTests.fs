@@ -61,6 +61,10 @@ let CborTestList =
             Assert.Equal(2, d2.["b"])
             assertRoundTrip((fun (w, x) -> σResult(w, x, σInt, σString)), δResult(δInt, δString), Error "e")
             assertRoundTrip((fun (w, x) -> σChoice(w, x, σString, σInt)), δChoice(δString, δInt), Choice1Of2 "x"))
+        Test.Sync("collections read back from a writer that keeps indefinite lengths", fun () ->
+            let w = CborWriter()
+            σList(w, [1; 2], σInt)
+            Assert.Equal([1; 2], Cbor.decode(δList δInt, ReadOnlyMemory(w.Encode()))))
         Test.Sync("an empty ImmA2D keeps its column count", fun () ->
             let m = ImmA2D<int>(0, 3, ImmutableArray.Empty)
             let m2 = roundTrip((fun (w, x) -> σImmA2D(w, x, σInt)), δImmA2D δInt, m)

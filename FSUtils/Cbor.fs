@@ -159,9 +159,7 @@ module Cbor =
         a
 
     let σList<'a>(w: CborWriter, xs: 'a list, σ: CborWriter * 'a -> unit) =
-        σArray(w, fun () ->
-            for x in xs do
-                σ(w, x))
+        σDefinite(w, List.length xs, fun () -> for x in xs do σ(w, x))
     let δList<'a> (δ: CborReader -> 'a) (r: CborReader) : 'a list =
         List.ofArray(δArrayOf δ r)
 
