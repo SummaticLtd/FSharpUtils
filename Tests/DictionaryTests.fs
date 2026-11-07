@@ -1,5 +1,6 @@
 ﻿module Tests.DictionaryTests
 
+open System.Collections.Concurrent
 open System.Collections.Generic
 open System.Collections.Immutable
 open SimpleTests
@@ -22,4 +23,15 @@ let DictionaryTestList =
             let d = ImmutableDictionary.CreateRange([ KeyValuePair("a", 1) ])
             Assert.Equal(ValueSome 1, d |> ImmutableDictionary.tryFind "a")
             Assert.Equal(ValueNone, d |> ImmutableDictionary.tryFind "b"))
+        Test.Sync("the concurrent lookup reports presence", fun () ->
+            let d = ConcurrentDictionary<string, int>()
+            d.["a"] <- 1
+            Assert.Equal(ValueSome 1, d |> ConcurrentDictionary.tryFind "a")
+            Assert.Equal(ValueNone, d |> ConcurrentDictionary.tryFind "b"))
+        Test.Sync("tryRemove returns what it removes, once", fun () ->
+            let d = ConcurrentDictionary<string, int>()
+            d.["a"] <- 1
+            Assert.Equal(ValueSome 1, d |> ConcurrentDictionary.tryRemove "a")
+            Assert.Equal(ValueNone, d |> ConcurrentDictionary.tryRemove "a")
+            Assert.Equal(0, d.Count))
     ])
