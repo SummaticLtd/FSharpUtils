@@ -14,7 +14,7 @@ Everything here is allocation-conscious, trimming-friendly and AOT-friendly: no 
 | `Result`, `ValueOption`, `Task`, `Async`, `Tuple` | The missing combinators, notably `Result.ofImmArrayMap` and `ValueOption.ofImmArrayMap`, which short-circuit. |
 | `Instant` | A struct UTC timestamp. Non-UTC input is rejected rather than silently reinterpreted. |
 | `Parse` | `voption`-returning, invariant-culture parsers for `int`, `float`, `Guid`, `Uri` and `Complex`. |
-| `Dictionary`, `ImmutableDictionary` | `tryFind` returning `voption`, and `addOrReplace`. |
+| `Dictionary`, `ImmutableDictionary`, `ConcurrentDictionary` | `tryFind` returning `voption`; `addOrReplace` for `Dictionary` and `tryRemove` for `ConcurrentDictionary`. |
 | `Json` | `Result`-returning `System.Text.Json` accessors that check the value kind instead of throwing. |
 | `Cbor`, `Deflate` | `System.Formats.Cbor` combinators: `σX` writes an X, `δX` reads one, for primitives, `Guid`, `Instant`, options, collections, `ImmA2D`, `Choice` and `Result`. Readers skip trailing fields from newer writers, and `δTrailing` defaults fields older writers omitted. `Cbor.encodeCompressed` adds Deflate. |
 | `Numeric` | Clamps, a `modulus` never negative for a positive divisor, `gcd`, `isPrime`, exact integer roots, and `toRoman`/`toAlphabets`/`ordinalStr`. `sum` throws rather than wrapping on overflow. |
