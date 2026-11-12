@@ -14,9 +14,10 @@ module Cbor =
         σ(w, x)
         w.Encode()
 
-    let decode<'a>(δ: CborReader -> 'a, bytes: ReadOnlyMemory<byte>) : 'a =
-        // Deeper input would overflow the stack of the recursive readers.
-        δ(CborReader(bytes, CborReaderOptions(ConformanceMode = CborConformanceMode.Lax, MaxDepth = 500)))
+    /// Deeper input than MaxDepth would overflow the stack of the recursive readers.
+    let reader(bytes: ReadOnlyMemory<byte>) = CborReader(bytes, CborReaderOptions(ConformanceMode = CborConformanceMode.Lax, MaxDepth = 500))
+
+    let decode<'a>(δ: CborReader -> 'a, bytes: ReadOnlyMemory<byte>) : 'a = δ(reader bytes)
 
     let encodeCompressed<'a>(σ: CborWriter * 'a -> unit, x: 'a) = Deflate.compress(encode(σ, x))
 
