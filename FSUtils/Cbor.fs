@@ -15,17 +15,14 @@ module Cbor =
         w.Encode()
 
     let decode<'a>(δ: CborReader -> 'a, bytes: ReadOnlyMemory<byte>) : 'a =
-        δ(CborReader(bytes, CborConformanceMode.Lax))
+        // Deeper input would overflow the stack of the recursive readers.
+        δ(CborReader(bytes, CborReaderOptions(ConformanceMode = CborConformanceMode.Lax, MaxDepth = 500)))
 
     let encodeCompressed<'a>(σ: CborWriter * 'a -> unit, x: 'a) = Deflate.compress(encode(σ, x))
 
     let decodeCompressed<'a>(δ: CborReader -> 'a, data: byte[]) = decode(δ, ReadOnlyMemory(Deflate.decompress data))
 
-    /// Deeper input would overflow the stack of the recursive readers. TODO: use CborReaderOptions.MaxDepth from System.Formats.Cbor 11.
-    let readStartArray(r: CborReader) =
-        let n = r.ReadStartArray()
-        if r.CurrentDepth > 500 then raise(CborContentException "CBOR nested deeper than 500")
-        n
+    let readStartArray(r: CborReader) = r.ReadStartArray()
 
     let private readStartDefiniteArray(r: CborReader) =
         let n = readStartArray r

@@ -17,6 +17,7 @@ let private throwsContent(f: unit -> unit) =
 
 let rec private δNested(r: CborReader) : int = δArray(r, fun () -> if isArray r then δNested r + 1 else 0)
 let private nested(depth: int) = ofHex(String.replicate (depth - 1) "81" + "80")
+let rec private σNested(w: CborWriter, depth: int) = σArray(w, fun () -> if depth > 1 then σNested(w, depth - 1))
 
 let CborTestList =
     TestList("Cbor", [
@@ -71,6 +72,7 @@ let CborTestList =
             Assert.Equal((1, 9), Cbor.decode((fun r -> δArray(r, fun () -> δInt r, δTrailing(r, δInt, 9))), ofHex "8101")))
         Test.Sync("nesting deeper than 500 is rejected", fun () ->
             Assert.Equal(499, Cbor.decode(δNested, nested 500))
+            Assert.Equal(499, Cbor.decode(δNested, ReadOnlyMemory(Cbor.encode(σNested, 500))))
             Assert.True(throwsContent(fun () -> Cbor.decode(δNested, nested 501) |> ignore), "501 levels"))
         Test.Sync("a declared length beyond the input is rejected before allocating", fun () ->
             Assert.True(throwsContent(fun () -> Cbor.decode(δImmArray δInt, ofHex "9A7FFFFFFF") |> ignore), "array length")
